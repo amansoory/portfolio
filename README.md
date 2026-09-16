@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Source → System
 
-## Getting Started
+A portfolio built around an interactive, scroll-responsive computing system. Next.js App Router, TypeScript, Tailwind CSS, shadcn/ui Nova, React Three Fiber, Drei, Three.js, Motion, and Lucide.
 
-First, run the development server:
+## Run locally
 
-```bash
+Use Node.js 22.13+ (or Node.js 24 LTS). The existing Node 20.17 installation can build the site, but is below some installed development tools' supported versions.
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Add your content
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `src/lib/portfolio.ts`. It contains the profile, contact URLs, featured projects, experience, and skills. Bracketed text is deliberately unfilled. No employers, project results, or qualifications have been invented.
 
-## Learn More
+- Set `email`, `github`, `linkedin`, and `resume` to real values. Missing URLs render as non-clickable “Not added” labels.
+- A resume can live at `public/resume.pdf`; set `profile.resume` to `/resume.pdf`.
+- Replace each project's text, tags, slug, dates, role, and URLs. Set `placeholder: false` when that case study is complete.
+- Replace conceptual illustrations in `src/components/project-visual.tsx` with actual project visuals when available. Update the draft note on the homepage when real content is added.
+- Replace the introductory copy in `src/app/page.tsx` if desired.
 
-To learn more about Next.js, take a look at the following resources:
+## Publish
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Add real content and validate external URLs and the resume.
+2. Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin, without a trailing slash (see `.env.example`).
+3. Set `profile.draft` to `false`. Draft mode intentionally emits `noindex`, blocks crawling, and leaves the sitemap empty.
+4. Run the checks below, then deploy to a Next.js-compatible Node host or Vercel. `npm run start` serves the production build.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Canonical URLs, Open Graph and Twitter metadata, a generated sharing image, robots.txt, a sitemap, and statically generated case studies are included. No analytics, forms, or third-party tracking are configured. Contact uses a direct email link once supplied.
 
-## Deploy on Vercel
+## Verify
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```sh
+npm run lint
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If Chrome is already installed, set `PLAYWRIGHT_CHANNEL=chrome` instead of downloading Chromium. In PowerShell: `$env:PLAYWRIGHT_CHANNEL='chrome'`.
+
+Tests run against a production server on port 3100. They cover desktop WebGL and pause controls, mobile navigation and narrow viewports, reduced motion, missing WebGL, static content without JavaScript, case-study routes, and metadata. Screenshots and failure traces are written to ignored `test-results/`.
+
+## Visual architecture
+
+- Server-rendered page content stays available before 3D loads and without JavaScript.
+- One dynamically imported canvas is mounted only for desktop visitors who have not requested reduced motion or data saving. Mobile uses an inline vector illustration; it does not download the scene module.
+- A shared scroll controller drives the telemetry, processor, circuit trace, and section diagrams. Backward scrolling restores the same scene state. There are no looping packets or idle animations.
+- The canvas renders on demand when its scroll input changes and stops offscreen, in a hidden tab, or when paused. Pixel density is capped at 1.5; processor pins are instanced. No external textures, postprocessing, or shadow maps are used.
+- Scroll separates processor layers, rotates the assembly, adjusts the camera and lighting, and routes a conceptual request. A short sticky transition adds approximately 60% of a viewport between hero and projects on screens at least 1024px wide and 900px tall. Shorter screens keep normal document flow.
+- A quiet circuit trace continues into the existing project windows, experience timeline, skills groups, and contact section. Project diagrams respond to local scroll progress. Entrances happen once, with a small stagger; masks and blur are limited to desktop illustrations.
+- A scene error boundary and context-loss handling preserve the fallback illustration.
+- Motion reveals enhance already-visible content. Anchor jumps and keyboard focus finish relevant entrances immediately. The global pause control stops the story; location telemetry continues to report actual reading progress.
+- Phones use a gently separating vector processor and a simple trace, with no pinning or WebGL download. Reduced-motion users receive static compositions, no pinning, no blur, and normal anchor navigation; changing the OS preference during a visit is supported.
+- The mobile menu uses the existing Nova Sheet primitive for focus management and Escape-to-close behavior.
+
+The visual trace and project diagrams are illustrative, not live telemetry. Performance still depends on the visitor's GPU; measure on target hardware before making frame-rate claims.
+
+The browser suite also checks exact reverse-scroll progression, sticky release, anchor and keyboard navigation, live reduced-motion changes, narrow-screen overflow, and actual WebGL draw-call counts while idle, paused, and offscreen.
