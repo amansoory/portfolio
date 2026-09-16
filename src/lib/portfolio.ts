@@ -33,7 +33,7 @@ export const profile: Profile = {
   email: "armanmansoorhassan@gmail.com",
   github: "https://github.com/amansoory",
   linkedin: "https://linkedin.com/in/arman-hassan1",
-  resume: "/Arman_Hassan_Resume.pdf",
+  resume: "/resume.pdf?v=2",
   // Enable indexing after the final deployment URL and resume file are supplied.
   draft: true,
 };
