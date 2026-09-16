@@ -1,3 +1,4 @@
+import { copy } from "@/lib/copy";
 import Link from "next/link";
 import {
   ArrowDown,
@@ -5,16 +6,25 @@ import {
   Braces,
   Code2,
   Cpu,
+  Database,
   GitBranch,
   MapPin,
 } from "lucide-react";
 import { HeroExperience } from "@/components/hero-experience";
+import { ExperienceSection } from "@/components/experience-section";
 import { ProjectVisual } from "@/components/project-visual";
 import { Contact, ResourceLink, SectionLabel } from "@/components/portfolio-ui";
 import { Reveal } from "@/components/reveal";
 import { ScrollJourney } from "@/components/scroll-journey";
 import { Badge } from "@/components/ui/badge";
-import { experience, profile, projects, skills } from "@/lib/portfolio";
+import {
+  coursework,
+  experience,
+  portfolioCopy,
+  profile,
+  projects,
+  skills,
+} from "@/lib/portfolio";
 
 export default function Home() {
   return (
@@ -25,32 +35,33 @@ export default function Home() {
             <div className="hero-copy">
               <div className="hero-kicker">
                 <span className="status-dot" />
-                <span>SOFTWARE ENGINEER</span>
+                <span>{profile.role.toUpperCase()}</span>
                 <span className="kicker-divider">/</span>
-                <span>PORTFOLIO — 2026</span>
+                <span>{copy.hero.edition}</span>
               </div>
-              <p className="hero-name">Hello, I’m {profile.name}.</p>
+              <p className="hero-name">
+                {copy.hero.greeting} {profile.name}.
+              </p>
               <h1 id="hero-title">
-                From a line
+                {copy.hero.title[0]}
                 <br />
-                of code.
+                {copy.hero.title[1]}
                 <br />
                 <span>
-                  To a world
-                  <br className="mobile-break" /> of possibility.
+                  {copy.hero.title[2]}
+                  <br className="mobile-break" /> {copy.hero.title[3]}
                 </span>
               </h1>
               <p className="hero-description">
-                Exploring the space between thoughtful code
-                <br className="desktop-break" /> and things that make a
-                difference.
+                {profile.heroLines[0]}
+                <br className="desktop-break" /> {profile.heroLines[1]}
               </p>
               <div className="hero-actions">
                 <Link href="#work" className="primary-link">
-                  Explore my work <ArrowDown size={17} />
+                  {copy.hero.work} <ArrowDown size={17} />
                 </Link>
                 <Link href="#about" className="quiet-link">
-                  The person behind it <ArrowUpRight size={16} />
+                  {copy.hero.about} <ArrowUpRight size={16} />
                 </Link>
               </div>
             </div>
@@ -58,28 +69,28 @@ export default function Home() {
             <div className="hero-bottom">
               <span>
                 <span className="scroll-line" />
-                SCROLL TO FOLLOW THE SIGNAL
+                {copy.hero.scroll}
               </span>
-              <span className="hero-coordinates">SOURCE → SYSTEM → IMPACT</span>
+              <span className="hero-coordinates">{copy.hero.path}</span>
             </div>
           </section>
           <div
             className="process-strip section-shell"
-            aria-label="Engineering process"
+            aria-label={copy.process.label}
           >
             <span className="process-intro">
-              <GitBranch size={15} /> A THOUGHT BECOMES A SYSTEM
+              <GitBranch size={15} /> {copy.process.label}
             </span>
             <span className="process-step step-write">
-              <span>01</span> Write.
+              <span>01</span> {copy.process.steps[0]}
             </span>
             <i />
             <span className="process-step step-connect">
-              <span>02</span> Connect.
+              <span>02</span> {copy.process.steps[1]}
             </span>
             <i />
             <span className="process-step step-ship">
-              <span>03</span> Ship.
+              <span>03</span> {copy.process.steps[2]}
             </span>
             <span className="process-end">↵</span>
           </div>
@@ -90,35 +101,34 @@ export default function Home() {
           aria-labelledby="work-title"
         >
           <Reveal>
-            <SectionLabel number="01">SELECTED WORK</SectionLabel>
+            <SectionLabel number="01">{copy.work.label}</SectionLabel>
             <div className="section-heading">
               <h2 id="work-title">
-                Ideas, made <span>real.</span>
+                {copy.work.title[0]} <span>{copy.work.title[1]}</span>
               </h2>
               <p>
-                A closer look at the build.
+                {copy.work.intro[0]}
                 <br />
-                The problem. The decisions. The result.
+                {copy.work.intro[1]}
               </p>
             </div>
             <p className="draft-note">
               <span className="tiny-dot" />
-              Project details will be added from my resume. Visuals below are
-              conceptual.
+              {portfolioCopy.workNote}
             </p>
           </Reveal>
           <div className="project-list">
             {projects.map((project) => (
               <Reveal key={project.slug}>
                 <article
-                  className={`project-row theme-${project.accent}`}
+                  className={`project-row theme-${project.accent}${project.featured ? " project-featured" : ""}`}
                   data-flow
                 >
                   <Link
                     href={`/projects/${project.slug}`}
                     className="project-preview-link"
                     data-enter="visual"
-                    aria-label={`Open ${project.name} case study`}
+                    aria-label={`${copy.work.open} ${project.name}`}
                   >
                     <ProjectVisual project={project} />
                     <span className="preview-open">
@@ -148,9 +158,22 @@ export default function Home() {
                         href={`/projects/${project.slug}`}
                         className="case-link"
                       >
-                        Explore case study <ArrowUpRight size={17} />
+                        {copy.work.caseLink} <ArrowUpRight size={17} />
                       </Link>
-                      <ResourceLink href={project.live}>Live</ResourceLink>
+                      {project.live ? (
+                        <ResourceLink href={project.live}>
+                          {project.slug === "vibesafe" || project.featured
+                            ? copy.work.demo
+                            : copy.work.live}
+                        </ResourceLink>
+                      ) : (
+                        <ResourceLink href={project.github}>
+                          {copy.links.viewCode}
+                        </ResourceLink>
+                      )}
+                      {project.accessNote && (
+                        <span className="project-access-note">{project.accessNote}</span>
+                      )}
                     </div>
                   </div>
                 </article>
@@ -164,42 +187,55 @@ export default function Home() {
           aria-labelledby="experience-title"
         >
           <Reveal>
-            <SectionLabel number="02">THE JOURNEY</SectionLabel>
+            <SectionLabel number="02">{copy.experience.label}</SectionLabel>
             <div className="split-section">
               <div>
                 <h2 id="experience-title">
-                  Always
+                  {copy.experience.title[0]}
                   <br />
-                  <span>in progress.</span>
+                  <span>{copy.experience.title[1]}</span>
                 </h2>
                 <p className="section-description">
-                  Every chapter adds a new perspective.
+                  {copy.experience.intro[0]}
                   <br />
-                  Here’s where mine have come from.
+                  {copy.experience.intro[1]}
                 </p>
                 <div className="small-terminal">
                   <span>
                     <GitBranch size={14} /> career / main
                   </span>
                   <code>$ git log --oneline</code>
-                  <span className="muted"># experience to be added</span>
+                  <span className="muted">{portfolioCopy.experienceNote}</span>
                 </div>
+                <ExperienceSection />
               </div>
               <ol className="timeline" data-flow>
                 {experience.map((item, i) => (
-                  <li key={i} data-enter data-flow>
+                  <li key={i} data-enter data-flow data-experience-index={i}>
                     <span
                       className={`timeline-dot ${item.current ? "current" : ""}`}
                     />
                     <div className="timeline-period">
                       {item.period}
                       {item.current && (
-                        <span className="timeline-current">LATEST</span>
+                        <span className="timeline-current">
+                          {copy.experience.latest}
+                        </span>
                       )}
                     </div>
                     <h3>{item.role}</h3>
                     <p className="timeline-company">{item.company}</p>
                     <p>{item.detail}</p>
+                    {item.signals && (
+                      <div
+                        className="experience-signals"
+                        aria-label={item.signals.join(" to ")}
+                      >
+                        {item.signals.map((signal) => (
+                          <span key={signal}>{signal}</span>
+                        ))}
+                      </div>
+                    )}
                   </li>
                 ))}
               </ol>
@@ -212,22 +248,18 @@ export default function Home() {
           aria-labelledby="skills-title"
         >
           <Reveal>
-            <SectionLabel number="03">THE TOOLKIT</SectionLabel>
+            <SectionLabel number="03">{copy.skills.label}</SectionLabel>
             <div className="section-heading">
               <h2 id="skills-title">
-                Different tools.
+                {copy.skills.title[0]}
                 <br />
-                <span>One curious mind.</span>
+                <span>{copy.skills.title[1]}</span>
               </h2>
-              <p>
-                The right tool for the problem.
-                <br />
-                My technical skills, once added.
-              </p>
+              <p>{portfolioCopy.skillsNote}</p>
             </div>
             <div className="skills-grid" data-flow>
               {skills.map((group, i) => {
-                const Icon = [Code2, Braces, Cpu, GitBranch][i];
+                const Icon = [Code2, Braces, Cpu, Database][i];
                 return (
                   <div
                     className="skill-group"
@@ -249,6 +281,14 @@ export default function Home() {
                 );
               })}
             </div>
+            <details className="coursework">
+              <summary>{portfolioCopy.courseworkLabel}</summary>
+              <ul>
+                {coursework.map((course) => (
+                  <li key={course}>{course}</li>
+                ))}
+              </ul>
+            </details>
           </Reveal>
         </section>
         <section
@@ -257,7 +297,7 @@ export default function Home() {
           aria-labelledby="about-title"
         >
           <Reveal>
-            <SectionLabel number="04">BEHIND THE TERMINAL</SectionLabel>
+            <SectionLabel number="04">{copy.about.label}</SectionLabel>
             <div className="about-grid">
               <div
                 className="about-art"
@@ -271,16 +311,14 @@ export default function Home() {
                   <i />
                   <span>{"}"}</span>
                 </div>
-                <span className="about-art-label">
-                  STILL CURIOUS. STILL BUILDING.
-                </span>
-                <span className="about-art-index">HUMAN / 001</span>
+                <span className="about-art-label">{copy.about.art}</span>
+                <span className="about-art-index">{copy.about.index}</span>
               </div>
               <div className="about-copy">
                 <h2 id="about-title" data-enter>
-                  A person.
+                  {copy.about.title[0]}
                   <br />
-                  <span>Not just a prompt.</span>
+                  <span>{copy.about.title[1]}</span>
                 </h2>
                 <p className="about-intro" data-enter>
                   {profile.introduction}
@@ -291,13 +329,14 @@ export default function Home() {
                     <MapPin size={15} />
                     {profile.location}
                   </span>
+                  <span>{profile.degree}</span>
                   <span>
                     <span className="status-dot" />
                     {profile.availability}
                   </span>
                 </div>
                 <ResourceLink href={profile.resume}>
-                  Download resume
+                  {copy.about.resume}
                 </ResourceLink>
               </div>
             </div>

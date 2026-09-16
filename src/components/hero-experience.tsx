@@ -1,5 +1,7 @@
 "use client";
 
+import { copy, sceneStages as stages } from "@/lib/copy";
+
 import dynamic from "next/dynamic";
 import {
   Component,
@@ -16,23 +18,6 @@ import { useJourney } from "@/components/scroll-journey";
 const SystemScene = dynamic(() => import("@/components/system-scene"), {
   ssr: false,
 });
-const stages = [
-  {
-    label: "01 / SOURCE",
-    command: "$ npm run build",
-    output: "source → modules → application",
-  },
-  {
-    label: "02 / CONNECT",
-    command: "$ curl -i /api/hello",
-    output: "client → gateway → service",
-  },
-  {
-    label: "03 / RESPOND",
-    command: "HTTP/1.1 200 OK",
-    output: '{ "message": "Hello, world." }',
-  },
-];
 
 class SceneBoundary extends Component<
   { children: ReactNode },
@@ -223,14 +208,10 @@ export function HeroExperience() {
       data-stage={journey.reduced ? 0 : stage}
     >
       <div className="scene-caption">
-        <span className="crosshair">+</span> A LITTLE CODE. A CONNECTED WORLD.
+        <span className="crosshair">+</span> {copy.scene.caption}
         <span className="scene-caption-index">SYS.001</span>
       </div>
-      <div
-        className="scene-stage"
-        role="img"
-        aria-label="An exploded processor connected to client and service nodes. Scrolling separates its layers and sends a request through the system."
-      >
+      <div className="scene-stage" role="img" aria-label={copy.scene.alt}>
         <div className="scene-halo" />
         <div
           className={`poster-layer ${ready && eligible ? "poster-hidden" : ""}`}
@@ -255,12 +236,12 @@ export function HeroExperience() {
           <span className="status-dot" />
           {stages[journey.reduced ? 0 : stage].label}
         </span>
-        <span>SCROLL TO EXPLORE</span>
+        <span>{copy.scene.scroll}</span>
       </div>
       <div className="hero-terminal">
         <div className="hero-terminal-title">
           <span>
-            <Terminal size={13} /> system / illustrative trace
+            <Terminal size={13} /> {copy.scene.terminal}
           </span>
           <span className="window-dots">
             <i />

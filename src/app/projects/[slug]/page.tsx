@@ -1,8 +1,9 @@
+import { copy } from "@/lib/copy";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, GitFork } from "lucide-react";
-import { projects, profile, siteUrl } from "@/lib/portfolio";
+import { projects, profile, portfolioCopy, siteUrl } from "@/lib/portfolio";
 import { ProjectVisual } from "@/components/project-visual";
 import { Contact, ResourceLink, SectionLabel } from "@/components/portfolio-ui";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const project = projects.find((item) => item.slug === slug);
   if (!project) notFound();
   const description = project.placeholder
-    ? `${project.category} — case study awaiting project details.`
+    ? `${project.category}. ${copy.case.pending}`
     : project.description;
   return {
     title: project.name,
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: "/opengraph-image",
           width: 1200,
           height: 630,
-          alt: "From source to system. Software engineering portfolio.",
+          alt: copy.preview.alt,
         },
       ],
     },
@@ -56,7 +57,7 @@ export default async function ProjectPage({ params }: Props) {
       <div className="section-shell">
         <Link href="/#work" className="back-link">
           <ArrowLeft size={15} />
-          Back to selected work
+          {copy.links.back}
         </Link>
         <header className="case-header">
           <SectionLabel number={project.number}>
@@ -72,41 +73,50 @@ export default async function ProjectPage({ params }: Props) {
             ))}
           </div>
           {project.placeholder && (
-            <p className="draft-note">
-              Content placeholder — project details and results to be added.
-            </p>
+            <p className="draft-note">{copy.case.pending}</p>
           )}
           <div className="case-meta">
             <div>
-              <span>ROLE</span>
+              <span>{copy.case.role}</span>
               <p>{project.role}</p>
             </div>
-            <div>
-              <span>YEAR</span>
-              <p>{project.year}</p>
-            </div>
-            <div>
-              <span>DURATION</span>
-              <p>{project.duration}</p>
-            </div>
+            {project.year && (
+              <div>
+                <span>{copy.case.year}</span>
+                <p>{project.year}</p>
+              </div>
+            )}
+            {project.duration && (
+              <div>
+                <span>{copy.case.duration}</span>
+                <p>{project.duration}</p>
+              </div>
+            )}
             <div className="case-resources">
               <ResourceLink href={project.github}>
                 <GitFork size={15} />
-                Source
+                {copy.links.source}
               </ResourceLink>
-              <ResourceLink href={project.live}>Live project</ResourceLink>
+              <ResourceLink href={project.live}>
+                {project.slug === "vibesafe" || project.featured
+                  ? copy.work.demo
+                  : copy.links.live}
+              </ResourceLink>
             </div>
           </div>
+          {project.accessNote && (
+            <p className="project-access-note case-access-note">{project.accessNote}</p>
+          )}
         </header>
         <div className="case-art">
           <ProjectVisual project={project} />
         </div>
         <div className="case-body">
           {[
-            ["01", "The problem", project.problem],
-            ["02", "Inside the build", project.approach],
-            ["03", "The outcome", project.outcome],
-            ["04", "What comes next", project.lessons],
+            ["01", copy.case.chapters[0], project.problem],
+            ["02", copy.case.chapters[1], project.approach],
+            ["03", copy.case.chapters[2], project.outcome],
+            ["04", portfolioCopy.caseFocus, project.lessons],
           ].map(([number, title, text]) => (
             <Reveal key={number}>
               <section className="case-chapter">
@@ -121,7 +131,9 @@ export default async function ProjectPage({ params }: Props) {
         </div>
         <Link className="next-project" href={`/projects/${next.slug}`}>
           <div>
-            <span className="eyebrow">NEXT PROJECT / {next.number}</span>
+            <span className="eyebrow">
+              {copy.case.next} / {next.number}
+            </span>
             <h2>{next.name}</h2>
           </div>
           <ArrowUpRight size={40} strokeWidth={1} />

@@ -1,19 +1,20 @@
+import { copy } from "@/lib/copy";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
     <main id="main-content" className="not-found section-shell">
-      <span className="eyebrow">404 / ROUTE NOT FOUND</span>
+      <span className="eyebrow">{copy.notFound.label}</span>
       <h1>
-        A small detour
+        {copy.notFound.title[0]}
         <br />
-        <span>in the system.</span>
+        <span>{copy.notFound.title[1]}</span>
       </h1>
-      <p>This page doesn’t exist. Let’s get back to the work.</p>
+      <p>{copy.notFound.description}</p>
       <Link href="/" className="primary-link">
         <ArrowLeft size={16} />
-        Back to home
+        {copy.links.home}
       </Link>
     </main>
   );

@@ -8,7 +8,7 @@ test("desktop scene loads, pauses, and exposes working project navigation", asyn
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "From a line",
+    "From code",
   );
   await expect(page.locator("canvas")).toBeVisible({ timeout: 20_000 });
   await expect(page.locator(".poster-hidden")).toHaveCount(1);
@@ -21,10 +21,10 @@ test("desktop scene loads, pauses, and exposes working project navigation", asyn
     page.getByRole("button", { name: "Pause motion" }),
   ).toBeVisible();
   await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
-  await page.getByRole("link", { name: "Explore case study" }).first().click();
-  await expect(page).toHaveURL(/\/projects\/project-one/);
+  await page.getByRole("link", { name: "Read the build" }).first().click();
+  await expect(page).toHaveURL(/\/projects\/vibesafe/);
   await expect(
-    page.getByRole("heading", { name: "The problem" }),
+    page.getByRole("heading", { name: "What it’s for" }),
   ).toBeVisible();
   expect(errors).toEqual([]);
 });
@@ -205,12 +205,12 @@ test("anchor destinations and keyboard focus bypass entrances", async ({
     "opacity",
     "1",
   );
-  await page.getByRole("link", { name: "Explore case study" }).first().focus();
+  await page.getByRole("link", { name: "Read the build" }).first().focus();
   await expect(
-    page.getByRole("link", { name: "Explore case study" }).first(),
+    page.getByRole("link", { name: "Read the build" }).first(),
   ).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/projects\/project-one/);
+  await expect(page).toHaveURL(/projects\/vibesafe/);
   await page.goBack();
   await expect(page).toHaveURL(/#work/);
   await expect(page.locator("#work-title")).toBeVisible();
@@ -329,7 +329,12 @@ test("case studies, missing routes, metadata, and honest empty links", async ({
   page,
   request,
 }) => {
-  for (const slug of ["project-one", "project-two", "project-three"]) {
+  for (const slug of [
+    "vibesafe",
+    "industry-resilience",
+    "space-battle",
+    "dungeon-hero",
+  ]) {
     const response = await page.goto(`/projects/${slug}`);
     expect(response?.status()).toBe(200);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
@@ -338,10 +343,10 @@ test("case studies, missing routes, metadata, and honest empty links", async ({
     );
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
       "content",
-      /Project/,
+      /VibeSafe|Industry Resilience Predictor|Arcade-Style Space Battle|Dungeon Hero/,
     );
     await expect(
-      page.getByRole("heading", { name: "The outcome" }),
+      page.getByRole("heading", { name: "What it does" }),
     ).toBeVisible();
     expect(
       await page
@@ -370,11 +375,11 @@ test("core content and navigation work without JavaScript", async ({
   await page.goto("http://127.0.0.1:3100/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator(".system-poster")).toBeVisible();
-  await page.getByRole("link", { name: "Explore my work" }).click();
+  await page.getByRole("link", { name: "See my work" }).click();
   await expect(page).toHaveURL(/#work/);
-  await page.getByRole("link", { name: "Explore case study" }).first().click();
+  await page.getByRole("link", { name: "Read the build" }).first().click();
   await expect(
-    page.getByRole("heading", { name: "Inside the build" }),
+    page.getByRole("heading", { name: "How I built it" }),
   ).toBeVisible();
   await context.close();
 });

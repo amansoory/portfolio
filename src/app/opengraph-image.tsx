@@ -1,7 +1,8 @@
+import { copy } from "@/lib/copy";
 import { ImageResponse } from "next/og";
 import { profile } from "@/lib/portfolio";
 
-export const alt = "From source to system. Software engineering portfolio.";
+export const alt = copy.preview.alt;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export default function Image() {
@@ -27,8 +28,10 @@ export default function Image() {
           fontSize: 22,
         }}
       >
-        <span>SE.DEV / SOFTWARE ENGINEER</span>
-        <span>01 — PORTFOLIO</span>
+        <span>
+          {profile.initials}.DEV / {profile.role.toUpperCase()}
+        </span>
+        <span>{copy.preview.title}</span>
       </div>
       <div
         style={{
@@ -40,8 +43,8 @@ export default function Image() {
           letterSpacing: -5,
         }}
       >
-        <span>From a line of code.</span>
-        <span style={{ color: "#b6dca1" }}>To a world of possibility.</span>
+        <span>{copy.preview.lines[0]}</span>
+        <span style={{ color: "#b6dca1" }}>{copy.preview.lines[1]}</span>
       </div>
       <div
         style={{
@@ -53,7 +56,7 @@ export default function Image() {
         }}
       >
         <span>{profile.name}</span>
-        <span>SOURCE → SYSTEM → IMPACT</span>
+        <span>{copy.hero.path}</span>
       </div>
     </div>,
     size,

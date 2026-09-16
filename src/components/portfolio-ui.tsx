@@ -1,3 +1,4 @@
+import { copy } from "@/lib/copy";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import {
@@ -38,16 +39,7 @@ export function ResourceLink({
   className?: string;
   icon?: boolean;
 }) {
-  if (!href)
-    return (
-      <span
-        className={`resource-link unavailable ${className}`}
-        aria-disabled="true"
-      >
-        {children}
-        <span className="pending-label">Not added</span>
-      </span>
-    );
+  if (!href) return null;
   const external = /^https?:\/\//.test(href);
   return (
     <a
@@ -57,7 +49,7 @@ export function ResourceLink({
     >
       {children}
       {icon && <ArrowUpRight size={16} aria-hidden="true" />}
-      {external && <span className="sr-only"> (opens in a new tab)</span>}
+      {external && <span className="sr-only"> {copy.links.external}</span>}
     </a>
   );
 }
@@ -71,29 +63,29 @@ export function Contact() {
       data-flow
     >
       <Reveal>
-        <SectionLabel number="05">THE NEXT CHAPTER</SectionLabel>
+        <SectionLabel number="05">{copy.contact.label}</SectionLabel>
         <div className="contact-main">
           <div>
             <p className="eyebrow" data-enter>
-              HAVE SOMETHING IN MIND?
+              {copy.contact.eyebrow}
             </p>
             <h2 id="contact-title" data-enter>
-              Let’s build
+              {copy.contact.title[0]}
               <br />
-              something <span>good.</span>
+              {copy.contact.title[1]} <span>{copy.contact.title[2]}</span>
               <span className="terminal-cursor" aria-hidden="true">
                 _
               </span>
             </h2>
           </div>
           <div className="contact-side" data-enter>
-            <p>Good work starts with a conversation.</p>
+            <p>{copy.contact.note}</p>
             <ResourceLink
               href={profile.email ? `mailto:${profile.email}` : null}
               className="contact-email"
             >
               <Mail size={18} />
-              {profile.email ?? "[Your email]"}
+              <span className="email-address">{profile.email}</span>
             </ResourceLink>
             <span className="contact-location">{profile.location}</span>
           </div>
@@ -101,15 +93,15 @@ export function Contact() {
         <div className="contact-links" data-enter>
           <ResourceLink href={profile.github}>
             <GitFork size={16} />
-            GitHub
+            {copy.links.github}
           </ResourceLink>
           <ResourceLink href={profile.linkedin}>
             <ContactRound size={16} />
-            LinkedIn
+            {copy.links.linkedin}
           </ResourceLink>
           <ResourceLink href={profile.resume}>
             <FileDown size={16} />
-            Resume
+            {copy.links.resume}
           </ResourceLink>
         </div>
       </Reveal>
@@ -125,10 +117,10 @@ export function SiteFooter() {
       </span>
       <span className="footer-note">
         <span className="status-dot" />
-        BUILT WITH INTENTION
+        {copy.footer}
       </span>
       <Link href="#top">
-        Back to top <ArrowUp size={14} />
+        {copy.links.top} <ArrowUp size={14} />
       </Link>
     </footer>
   );

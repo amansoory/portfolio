@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "@/lib/copy";
 
 import {
   createContext,
@@ -323,13 +324,11 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
                   className="journey-toggle"
                   onClick={() => setPaused((value) => !value)}
                   aria-pressed={paused}
-                  aria-label={paused ? "Resume motion" : "Pause motion"}
-                  title={
-                    paused ? "Resume all animation" : "Pause all animation"
-                  }
+                  aria-label={paused ? copy.motion.resume : copy.motion.pause}
+                  title={paused ? copy.motion.resumeAll : copy.motion.pauseAll}
                 >
                   {paused ? <Play size={11} /> : <Pause size={11} />}
-                  <span>{paused ? "Resume motion" : "Pause motion"}</span>
+                  <span>{paused ? copy.motion.resume : copy.motion.pause}</span>
                 </button>
               )}
             </div>

@@ -1,3 +1,4 @@
+import { copy } from "@/lib/copy";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -18,22 +19,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl || "http://localhost:3000"),
   title: {
-    default: `${profile.name} — Software Engineer`,
+    default: `${profile.name} | ${profile.role}`,
     template: `%s | ${profile.name}`,
   },
   description: siteDescription,
   robots: { index: !profile.draft, follow: !profile.draft },
   openGraph: {
-    title: `${profile.name} — Software Engineer`,
+    title: `${profile.name} | ${profile.role}`,
     description: siteDescription,
     type: "website",
     locale: "en_US",
-    siteName: "SE.DEV",
+    siteName: `${profile.initials}.DEV`,
     ...(siteUrl ? { url: siteUrl } : {}),
   },
   twitter: {
     card: "summary_large_image",
-    title: `${profile.name} — Software Engineer`,
+    title: `${profile.name} | ${profile.role}`,
     description: siteDescription,
   },
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
@@ -48,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body id="top">
         <a className="skip-link" href="#main-content">
-          Skip to content
+          {copy.nav.skip}
         </a>
         <SiteHeader />
         {children}
