@@ -18,7 +18,7 @@ Open http://localhost:3000.
 Edit `src/lib/portfolio.ts`. It contains Arman’s profile, contact URLs, projects, experience, skills, coursework, and schematic visual labels. Missing project URLs and dates remain null; no results or qualifications have been invented.
 
 - Set `email`, `github`, `linkedin`, and `resume` to real values. Missing URLs render as non-clickable “Not added” labels.
-- Add the supplied resume file at `public/Arman_Hassan_Resume.pdf`; its URL is already configured.
+- Add the supplied resume file at `public/resume.pdf`; its URL is already configured.
 - Replace each project's text, tags, slug, dates, role, and URLs. Set `placeholder: false` when that case study is complete.
 - Project illustrations communicate scanning, recovery, targeting, and pathfinding. They are explicitly schematic, not measured results or live output.
 - Replace the introductory copy in `src/app/page.tsx` if desired.
