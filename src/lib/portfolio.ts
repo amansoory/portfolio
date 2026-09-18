@@ -90,7 +90,10 @@ export const projects: Project[] = [
       "I initially considered filtering unrelated questions by search relevance score. Testing showed that unrelated and valid questions scored almost the same, so I added a lightweight Claude routing step. It identifies the student’s program for more targeted retrieval and stops off-topic requests before generating an answer.",
     github: null,
     live: "https://unc-degree-rag.vercel.app/",
-    accessNote: "Access code required for visitors.",
+    preview: {
+      src: "/projects/degree-planner-preview.png",
+      alt: "Degree Planner AI chatbot answering a question about the Psychology B.A. requirements with catalog citations.",
+    },
     featured: true,
     placeholder: false,
   },
