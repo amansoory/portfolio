@@ -2,7 +2,7 @@
 export const copy = {
   hero: {
     greeting: "Hi, I’m",
-    title: ["I’m a computer science student", "at UNC Chapel Hill who likes", "building useful software and", "experimenting with new technology."],
+    title: ["I turn ideas", "into software", "people can", "actually use."],
     edition: "PORTFOLIO / 2026",
     work: "View my work",
     about: "More about me",

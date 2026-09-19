@@ -23,7 +23,7 @@ export const profile: Profile = {
   availability: "Graduating May 2027",
   degree: "BS in Computer Science · Minor in Data Science",
   heroLines: [
-    "Most recently, I built a degree-planning chatbot and tested how a general classifier would handle 2048.",
+    "I’m a computer science student at UNC Chapel Hill. Most recently, I built a degree-planning chatbot and tested how a general classifier would handle 2048.",
     "",
   ],
   introduction:
