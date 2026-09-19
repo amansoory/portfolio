@@ -56,7 +56,7 @@ export default function Home() {
               </h1>
               <p className="hero-description">
                 {profile.heroLines[0]}
-                <br className="desktop-break" /> {profile.heroLines[1]}
+                {profile.heroLines[1] && <><br className="desktop-break" /> {profile.heroLines[1]}</>}
               </p>
               <div className="hero-actions">
                 <Link href="#work" className="primary-link">
@@ -108,6 +108,11 @@ export default function Home() {
                 >
                   <Link
                     href={`/projects/${project.slug}`}
+                    className="project-card-link"
+                    aria-label={`Read about ${project.name}`}
+                  />
+                  <Link
+                    href={`/projects/${project.slug}`}
                     className="project-preview-link"
                     data-enter="visual"
                     aria-label={`${copy.work.open} ${project.name}`}
@@ -127,7 +132,7 @@ export default function Home() {
                         {project.name}
                       </Link>
                     </h3>
-                    <p data-enter>{project.description}</p>
+                    <p data-enter>{project.cardDescription ?? project.description}</p>
                     <p className="project-contribution" data-enter><span>My work</span>{project.role}</p>
                     <div className="project-tags" data-enter>
                       {project.tags.map((tag) => (
@@ -177,7 +182,6 @@ export default function Home() {
                 <br />
                 <span>{copy.skills.title[1]}</span>
               </h2>
-              <p>{portfolioCopy.skillsNote}</p>
             </div>
             <div className="skills-grid" data-flow>
               {skills.map((group, i) => {
@@ -194,7 +198,6 @@ export default function Home() {
                       <span>/{group.id}</span>
                     </div>
                     <h3>{group.name}</h3>
-                    <p className="skill-description">{group.description}</p>
                     <ul>
                       {group.items.map((item, index) => (
                         <li key={index}>{item}</li>
@@ -273,7 +276,7 @@ export default function Home() {
           <Reveal>
             <SectionLabel number="04">{copy.experience.label}</SectionLabel>
             <nav className="career-overview" aria-label="Experience at a glance">
-              <a href="#experience"><span>Machine Learning Intern</span><strong>Timing</strong><p>LLM agents, retrieval, PostgreSQL and Redis</p></a>
+              <a href="#experience"><span>Machine Learning Intern</span><strong>Timing</strong><p>Contact follow-ups and backend performance</p></a>
               <a href="#experience"><span>Software Engineering Intern</span><strong>Vogro</strong><p>Python automation, APIs and React</p></a>
               <a href="#experience"><span>Teaching Assistant</span><strong>200+ students</strong><p>Python labs, debugging and office hours</p></a>
             </nav>

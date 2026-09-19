@@ -23,13 +23,13 @@ export const profile: Profile = {
   availability: "Graduating May 2027",
   degree: "BS in Computer Science · Minor in Data Science",
   heroLines: [
-    "Computer science at UNC Chapel Hill.",
-    "Recent work: a catalog-grounded chatbot and a classifier-driven 2048 experiment.",
+    "Most recently, I built a degree-planning chatbot and tested how a general classifier would handle 2048.",
+    "",
   ],
   introduction:
-    "I’m studying computer science at UNC Chapel Hill, with a minor in Data Science. I expect to finish my BS in May 2027.",
+    "I’m a computer science student at UNC Chapel Hill with a minor in Data Science, graduating in May 2027. I’m currently a software engineering intern, and I previously worked as a teaching assistant for an introductory Python course with more than 200 students.",
   about:
-    "Most of my recent work connects a model to a database, an API, and an interface someone can actually use. At Timing, that meant retrieving interaction history before an agent ranked contacts for follow-up. In my own projects, I’ve built catalog search with citations and served a pretrained C++ game model from an ARM server. I like being able to inspect what happened when something goes wrong. Teaching Python to 200+ students also gave me plenty of practice explaining a bug without hiding behind jargon.",
+    "I’m most interested in backend development, AI systems, and building software that is actually useful. Outside of work and school, I like experimenting with new tools and turning random ideas into projects.",
   email: "armanmansoorhassan@gmail.com",
   github: "https://github.com/amansoory",
   linkedin: "https://linkedin.com/in/arman-hassan1",
@@ -45,6 +45,7 @@ export type Project = {
   category: string;
   label: string;
   description: string;
+  cardDescription?: string;
   accent: "mint" | "blue" | "amber" | "sage";
   visual: "scan" | "chart" | "arcade" | "grid" | "planner" | "racing";
   visualLabels: string[];
@@ -70,9 +71,10 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "jev-2048",
+    cardDescription: "Play 2048 against Jev or watch it compete with bots built for the game.",
     number: "07",
     name: "Jev 2048",
-    category: "Decision systems / interactive experiment",
+    category: "2048 experiment",
     label: "JEV 2048",
     accent: "amber",
     visual: "grid",
@@ -113,9 +115,10 @@ export const projects: Project[] = [
 
   {
     slug: "degree-planner-ai",
+    cardDescription: "A chatbot that answers questions about UNC degree requirements and links to the official catalog.",
     number: "01",
     name: "Degree Planner AI",
-    category: "RAG chatbot / UNC degree planning",
+    category: "UNC degree-planning chatbot",
     label: "RETRIEVE → CITE → EXPLAIN",
     accent: "mint",
     visual: "planner",
@@ -147,7 +150,7 @@ export const projects: Project[] = [
     slug: "vibesafe",
     number: "02",
     name: "VibeSafe",
-    category: "AI security scanner agent",
+    category: "Repository security scanner",
     label: "CHECKING THE CODE",
     accent: "mint",
     visual: "scan",
@@ -176,12 +179,13 @@ export const projects: Project[] = [
     live: "https://vibe-safe-pt7v.vercel.app",
     preview: {
       src: "/projects/vibesafe-preview.png",
-      alt: "VibeSafe website: Ship code fearlessly, with AI-powered security scanning.",
+      alt: "VibeSafe website showing its repository security scanner.",
     },
     placeholder: false,
   },
   {
     slug: "industry-resilience",
+    cardDescription: "A hackathon project comparing how more than 90 industries declined and recovered during COVID.",
     number: "03",
     name: "Industry Resilience Predictor",
     category: "Economic data / machine learning",
@@ -244,6 +248,7 @@ export const projects: Project[] = [
   },
   {
     slug: "dungeon-hero",
+    cardDescription: "A turn-based Java game with grid movement and rule-based enemies.",
     number: "05",
     name: "Dungeon Hero",
     category: "Game architecture / Java",
@@ -321,7 +326,7 @@ export const experience: Experience[] = [
     company: "Timing",
     current: false,
     detail:
-      "At Timing, I built an LLM agent that prioritized contacts for follow-up. I worked on RAG over interaction history with PostgreSQL and pgvector, and improved API performance with PostgreSQL indexing and Redis caching.",
+      "At Timing, I built an agent that used past interactions to suggest which contacts needed a follow-up. I also improved database queries and added caching to speed up API requests.",
     takeaway: "I worked on retrieving the right context before an agent decided who needed a follow-up.",
     built: ["Contact-prioritization LLM agent", "RAG over interaction history", "PostgreSQL indexing and Redis caching"],
     tools: ["OpenAI API", "RAG", "PostgreSQL", "pgvector", "Redis"],
@@ -351,43 +356,11 @@ export const experience: Experience[] = [
   },
 ];
 
-export const skills: { id: string; name: string; description: string; items: string[] }[] = [
-  {
-    id: "01",
-    name: "Languages",
-    description: "Python for data and services, TypeScript for interfaces, and C++ when I need to work with a native model.",
-    items: ["Python", "TypeScript / JavaScript", "Java / C / C++", "SQL", "HTML / CSS"],
-  },
-  {
-    id: "02",
-    name: "Web & mobile",
-    description: "React and Next.js for stateful interfaces, with keyboard controls, loading states, and usable mobile layouts.",
-    items: ["Next.js / React", "React Native / Expo", "Tailwind CSS", "Streamlit"],
-  },
-  {
-    id: "03",
-    name: "Backend & databases",
-    description: "Request validation, SQL queries and indexes, and Redis caching. I’ve used these to connect services and reduce repeated work.",
-    items: ["FastAPI / Node.js", "REST APIs", "PostgreSQL / SQL indexing", "Redis"],
-  },
-  {
-    id: "04",
-    name: "AI & retrieval",
-    description: "I turn source documents into embeddings, retrieve relevant passages, and pass that context to a model. I also test structured classification with Jev.",
-    items: ["AWS Bedrock / Titan embeddings", "Claude / OpenAI API / TypeSafe Jev", "RAG / LLM agents", "pgvector / Amazon S3 Vectors"],
-  },
-  {
-    id: "05",
-    name: "Machine learning & data",
-    description: "Cleaning time-series data, fitting regression models, and comparing runs with fixed seeds and saved results.",
-    items: ["scikit-learn / regression", "pandas / NumPy", "Data cleaning / time-series analysis", "Seeded evaluation / decision traces"],
-  },
-  {
-    id: "06",
-    name: "Cloud & delivery",
-    description: "Vercel for web apps and an Oracle ARM VM for native inference, with Nginx, systemd, and browser tests before release.",
-    items: ["AWS S3 / IAM", "Oracle Cloud / Vercel", "Docker / Git / GitHub Actions", "Nginx / Linux / systemd", "Playwright / pytest"],
-  },
+export const skills: { id: string; name: string; items: string[] }[] = [
+  { id: "01", name: "Languages", items: ["Python", "TypeScript", "JavaScript", "Java", "C", "C++", "SQL"] },
+  { id: "02", name: "Frontend and mobile", items: ["React", "Next.js", "React Native", "Expo", "Tailwind CSS"] },
+  { id: "03", name: "Backend and infrastructure", items: ["Node.js", "FastAPI", "PostgreSQL", "Redis", "REST APIs", "Docker", "AWS", "Vercel", "Git", "GitHub Actions", "Playwright"] },
+  { id: "04", name: "AI and data", items: ["OpenAI API", "Claude", "TypeSafe Jev", "RAG", "pgvector", "scikit-learn", "pandas"] },
 ];
 
 export const coursework: string[] = [
@@ -409,7 +382,6 @@ export const portfolioCopy = {
   workNote:
     "Jev 2048, Degree Planner AI, VibeSafe, and Industry Resilience link to live sites. The other previews illustrate how the projects work.",
   experienceNote: "# agents, reliable systems, and teaching",
-  skillsNote: "The tools below are from my projects and internships, grouped by what I use them for.",
   courseworkLabel: "Coursework at UNC Chapel Hill",
   visualFooter: "ILLUSTRATION / NOT LIVE OUTPUT",
   caseFocus: "The interesting part",

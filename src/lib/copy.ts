@@ -2,12 +2,12 @@
 export const copy = {
   hero: {
     greeting: "Hi, I’m",
-    title: ["I build retrieval systems", "and software that", "makes model decisions", "inspectable."],
+    title: ["I’m a computer science student", "at UNC Chapel Hill who likes", "building useful software and", "experimenting with new technology."],
     edition: "PORTFOLIO / 2026",
-    work: "Explore my projects",
-    about: "About me",
+    work: "View my work",
+    about: "More about me",
     scroll: "SCROLL THROUGH MY WORK",
-    path: "NEXT: PROJECTS / IMPLEMENTATION / RESULTS",
+    path: "PROJECTS / EXPERIENCE / ABOUT",
   },
   process: {
     label: "HOW THE PIECES CONNECT",
@@ -18,7 +18,7 @@ export const copy = {
     title: ["Selected", "projects."],
     intro: ["What each project does,", "and how it works."],
     caseLink: "What I built",
-    live: "Live",
+    live: "Live Demo",
     demo: "Live Demo",
     open: "Read about",
   },
@@ -28,7 +28,7 @@ export const copy = {
     intro: ["I build AI systems, make useful software,", "and help people learn to code."],
     latest: "CURRENT",
   },
-  skills: { label: "TOOLS I USE", title: ["What I", "work with."] },
+  skills: { label: "TOOLS I USE", title: ["What I", "work with"] },
   about: {
     label: "ABOUT ME",
     title: ["A bit", "about me."],
@@ -66,7 +66,7 @@ export const copy = {
     top: "Back to top",
     source: "View Code",
     viewCode: "View Code",
-    live: "Live project",
+    live: "Live Demo",
   },
   footer: "Next.js · TypeScript · Vercel",
   case: {
@@ -81,7 +81,7 @@ export const copy = {
     note: "An illustration of how it works, not live output.",
     alt: "Arman Hassan’s software projects and computer science portfolio.",
     title: "01 / PORTFOLIO",
-    lines: ["Retrieval systems and inspectable model decisions.", "Projects by Arman Hassan."],
+    lines: ["Software projects by Arman Hassan.", "Projects by Arman Hassan."],
   },
   notFound: {
     label: "404 / PAGE NOT FOUND",
