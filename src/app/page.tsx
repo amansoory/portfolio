@@ -74,26 +74,11 @@ export default function Home() {
               <span className="hero-coordinates">{copy.hero.path}</span>
             </div>
           </section>
-          <div
-            className="process-strip section-shell"
-            aria-label={copy.process.label}
-          >
-            <span className="process-intro">
-              <GitBranch size={15} /> {copy.process.label}
-            </span>
-            <span className="process-step step-write">
-              <span>01</span> {copy.process.steps[0]}
-            </span>
-            <i />
-            <span className="process-step step-connect">
-              <span>02</span> {copy.process.steps[1]}
-            </span>
-            <i />
-            <span className="process-step step-ship">
-              <span>03</span> {copy.process.steps[2]}
-            </span>
-            <span className="process-end">↵</span>
-          </div>
+          <nav className="career-overview section-shell" aria-label="Experience at a glance">
+            <a href="#experience"><span>Machine Learning Intern</span><strong>Timing</strong><p>LLM agents, retrieval, PostgreSQL and Redis</p></a>
+            <a href="#experience"><span>Software Engineering Intern</span><strong>Vogro</strong><p>Python automation, APIs and React</p></a>
+            <a href="#experience"><span>Teaching Assistant</span><strong>200+ students</strong><p>Python labs, debugging and office hours</p></a>
+          </nav>
         </div>
         <section
           className="work-section section-shell"
@@ -146,6 +131,7 @@ export default function Home() {
                       </Link>
                     </h3>
                     <p data-enter>{project.description}</p>
+                    <p className="project-contribution" data-enter><span>My work</span>{project.role}</p>
                     <div className="project-tags" data-enter>
                       {project.tags.map((tag) => (
                         <Badge key={tag} variant="outline">
@@ -223,8 +209,8 @@ export default function Home() {
                         </span>
                       )}
                     </div>
-                    <h3>{item.role}</h3>
-                    <p className="timeline-company">{item.company}</p>
+                    <h3>{item.company}</h3>
+                    <p className="timeline-company">{item.role}</p>
                     <p>{item.detail}</p>
                     {item.signals && (
                       <div
@@ -335,9 +321,9 @@ export default function Home() {
                     {profile.availability}
                   </span>
                 </div>
-                <ResourceLink href={profile.resume}>
+                {profile.resume && <ResourceLink href={profile.resume}>
                   {copy.about.resume}
-                </ResourceLink>
+                </ResourceLink>}
               </div>
             </div>
           </Reveal>

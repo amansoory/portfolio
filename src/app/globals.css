@@ -3041,3 +3041,39 @@ h2 > span {
 .project-live-demo a { display: inline-block; margin: .75rem 1rem; text-decoration: underline; text-underline-offset: .25em; }
 .project-source-links { padding-left: 1.2rem; display: grid; gap: .85rem; }
 .project-source-links a { text-decoration: underline; text-underline-offset: .25em; overflow-wrap: anywhere; }
+
+/* Recruiter-facing reading hierarchy. */
+h1, h2, h3, .career-overview strong { font-family: var(--font-display), var(--font-geist-sans), sans-serif; }
+.career-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; padding-top: 2rem; padding-bottom: 2rem; }
+.career-overview a { display: block; padding: 1.5rem 2rem; border-top: 2px solid #b6dca1; border-right: 1px solid #354231; }
+.career-overview a:last-child { border-right: 0; }
+.career-overview span { font-size: .95rem; color: #b8c8b0; }
+.career-overview strong { display: block; margin: .55rem 0; color: #f2f5ed; font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -.04em; }
+.career-overview p { font-size: 1rem; line-height: 1.65; color: #c5cec0; }
+.career-overview a:hover, .career-overview a:focus-visible { background: #17221a; }
+.project-row { padding: clamp(1.2rem, 3vw, 2.5rem); margin-bottom: 1.8rem; border: 1px solid #354231; border-radius: 1.2rem; background: #101a14; gap: clamp(1.5rem, 4vw, 4rem); }
+.project-row.project-featured { border-top: 3px solid var(--theme-accent); }
+.project-copy h3 { font-size: clamp(2rem, 3.8vw, 3.3rem); line-height: 1.1; font-weight: 600; }
+.project-copy > p { font-size: 1.08rem; line-height: 1.75; color: #d0d8ca; }
+.project-category { font-size: .85rem; line-height: 1.5; color: var(--theme-accent); }
+.project-copy .project-contribution { padding-left: 1rem; border-left: 2px solid var(--theme-accent); font-size: 1rem; color: #edf1e9; }
+.project-contribution span { display: block; margin-bottom: .3rem; font-size: .85rem; font-weight: 600; color: var(--theme-accent); }
+.project-tags [data-slot="badge"] { font-family: var(--font-geist-sans), sans-serif; font-size: .83rem; padding: .35rem .6rem; }
+.project-actions a { font-size: .95rem; }
+.project-access-note { font-family: var(--font-geist-sans), sans-serif; font-size: .9rem; line-height: 1.6; }
+.timeline h3 { font-size: clamp(1.7rem, 3vw, 2.5rem); font-weight: 600; color: #eff4e9; }
+.timeline p { font-size: 1.05rem; color: #c1cdb9; line-height: 1.75; }
+.timeline .timeline-company { font-size: 1.2rem; font-weight: 500; color: #b6dca1; }
+.timeline-period { font-family: var(--font-geist-sans), sans-serif; font-size: .9rem; }
+.scroll-journey[data-motion="active"] .timeline li:not(.experience-active) { opacity: 1; }
+.experience-takeaway { font-size: 1.15rem; }
+.experience-panel-block ul { font-size: 1rem; line-height: 1.7; }
+.experience-panel-label, .experience-panel-topline { font-size: .8rem; }
+.experience-tools span { font-family: var(--font-geist-sans), sans-serif; font-size: .85rem; }
+.section-description, .section-heading > p { font-size: 1.1rem; line-height: 1.75; }
+@media(max-width: 767px) {
+ .career-overview { grid-template-columns: 1fr; }
+ .career-overview a { border-right: 0; padding: 1.3rem .5rem; }
+ .project-row { padding: 1.1rem; }
+ .project-copy h3 { font-size: 2rem; }
+}

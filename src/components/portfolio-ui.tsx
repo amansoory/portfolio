@@ -99,10 +99,10 @@ export function Contact() {
             <ContactRound size={16} />
             {copy.links.linkedin}
           </ResourceLink>
-          <ResourceLink href={profile.resume}>
+          {profile.resume && <ResourceLink href={profile.resume}>
             <FileDown size={16} />
             {copy.links.resume}
-          </ResourceLink>
+          </ResourceLink>}
         </div>
       </Reveal>
     </section>

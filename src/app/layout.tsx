@@ -1,10 +1,12 @@
 import { copy } from "@/lib/copy";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/portfolio-ui";
 import { profile, siteDescription, siteUrl } from "@/lib/portfolio";
+
+const displayFont = Space_Grotesk({ variable: "--font-display", subsets: ["latin"], display: "swap" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${displayFont.variable} dark antialiased`}
     >
       <body id="top">
         <a className="skip-link" href="#main-content">
