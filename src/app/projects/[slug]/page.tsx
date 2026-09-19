@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, GitFork } from "lucide-react";
 import { projects, profile, portfolioCopy, siteUrl } from "@/lib/portfolio";
+import { ProjectDemo } from "@/components/project-demo";
 import { ProjectVisual } from "@/components/project-visual";
 import { Contact, ResourceLink, SectionLabel } from "@/components/portfolio-ui";
 import { Badge } from "@/components/ui/badge";
@@ -111,6 +112,7 @@ export default async function ProjectPage({ params }: Props) {
         <div className="case-art">
           <ProjectVisual project={project} />
         </div>
+        {project.demoPreview && <ProjectDemo url={project.demoPreview} name={project.name} />}
         <div className="case-body">
           {[
             ["01", copy.case.chapters[0], project.problem],
@@ -128,6 +130,16 @@ export default async function ProjectPage({ params }: Props) {
               </section>
             </Reveal>
           ))}
+          {project.details?.map((detail, i) => (
+            <Reveal key={detail.title}><section className="case-chapter">
+              <span className="chapter-number">/{String(i + 5).padStart(2, "0")}</span>
+              <div><h2>{detail.title}</h2><p>{detail.text}</p></div>
+            </section></Reveal>
+          ))}
+          {project.sources && <section className="case-chapter">
+            <span className="chapter-number">↗</span>
+            <div><h2>Sources and attribution</h2><ul className="project-source-links">{project.sources.map(source => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer">{source.label} ↗</a></li>)}</ul></div>
+          </section>}
         </div>
         <Link className="next-project" href={`/projects/${next.slug}`}>
           <div>

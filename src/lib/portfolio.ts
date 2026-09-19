@@ -59,12 +59,58 @@ export type Project = {
   github: string | null;
   live: string | null;
   accessNote?: string;
+  details?: { title: string; text: string }[];
+  sources?: { label: string; href: string }[];
+  demoPreview?: string;
   featured?: boolean;
   placeholder: boolean;
   preview?: { src: string; alt: string };
 };
 
 export const projects: Project[] = [
+  {
+    slug: "jev-2048",
+    number: "07",
+    name: "Jev 2048",
+    category: "Decision systems / interactive experiment",
+    label: "JEV 2048",
+    accent: "amber",
+    visual: "grid",
+    visualLabels: [],
+    description: "Play 2048 or compare the same Jev classifier with different inputs, a search algorithm, and a pretrained reinforcement-learning bot. Inspect the information behind each move.",
+    tags: ["TypeSafe Jev", "Next.js", "React", "TypeScript", "Expectimax", "TD learning", "C++", "Oracle Cloud", "Vercel"],
+    year: "2026",
+    role: "Game engine, experiment design, native integration, and deployment",
+    duration: null,
+    problem: "I started because I was curious how Jev would play 2048. Instead of asking it to classify arbitrary examples, I wanted a task with clear rules, measurable outcomes, and consequences that build up over hundreds of decisions. Could a fast general-purpose classifier compete with an algorithm built specifically for the game? And could that specialist help it make better choices?",
+    approach: "The first version asked Jev to choose a direction. I moved that simulation into code: the engine calculates every legal resulting board, shuffles anonymous candidate labels, and asks Jev to choose an outcome. All current Jev variants use the same model without project-specific fine-tuning. They differ in what they receive: boards alone, calculated features, expectimax search summaries, pretrained n-tuple values, or both experts. Directions and expert recommendations stay hidden; Jev owns the final choice.",
+    outcome: "The live app supports human play and side-by-side bot comparisons, including two simultaneous Jev boards. Each board keeps playing independently until game over. Inspect shows candidate boards, choice probabilities, supplied features, specialist agreement, token usage, and timing. Seeded restarts and saved decision traces make the comparisons repeatable. Choice probabilities describe Jev’s preferences, not the chance of winning.",
+    lessons: "More expert information did not automatically mean better decisions. An earlier two-seed pilot improved from a mean score of 796 with raw Jev to 10,770 with calculated features and 34,276 with expectimax assistance, but the assisted version agreed with expectimax on 3,554 of 3,559 audited moves. That is evidence of strong influence, not independent planning. Later blinded arbitration did not demonstrate a benefit over always choosing one expert. The current anonymous-input variants have not completed a frozen multi-seed benchmark.",
+    details: [
+      { title: "The learned specialist: 67.1 million pattern weights", text: "N-tuple uses Hung Guei’s pretrained TDL2048+ 4×6 checkpoint: four tables of 16,777,216 float32 values, or 67,108,864 learned weights in total. These are temporal-difference-learned board-pattern values, not language-model parameters or weights I trained. The unchanged native selector greedily scores immediate reward plus the resulting board’s value. Jev can receive normalized values for all candidates alongside search measurements; the current combined version does not blend them into a fixed weighted recommendation." },
+      { title: "What the specialist comparison showed", text: "Across five matched development seeds, n-tuple won all five comparisons: mean score 222,849.6 versus 45,553.6 for this app’s bounded JavaScript expectimax implementation. One n-tuple run reached 32,768. Both bots consumed the same tile-value and shuffled cell-priority sequences; actual spawn cells could differ after their boards diverged. Five seeds are descriptive evidence, not proof of general superiority, and these results do not represent every expectimax implementation." },
+      { title: "From browser to native inference", text: "Next.js and React run on Vercel. Server-side routes call the TypeSafe SDK or an authenticated HTTPS n-tuple service on an Oracle Cloud ARM64 Ubuntu VM. A Python HTTP wrapper talks over stdin/stdout to one persistent C++ worker, loading the verified checkpoint once. Nginx terminates TLS with a Let’s Encrypt certificate; systemd supervises the loopback-only service. The native 32,768 tile encoding limit is explicit, and unsupported boards fail rather than silently switching bots. Hosted inference time includes network overhead, not just native computation." },
+      { title: "Interfaces, tools, and reproducibility", text: "The interface uses Tailwind CSS, shadcn-style components with Radix UI, Lucide icons, Motion, Recharts, and locally bundled DM Sans. Web Workers and Node worker threads keep search and structural calculations off the main event loop. A TypeScript controller owns the game state, legal-move validation, seeded spawning, and stale-response protection. Playwright and focused Node tests cover controls, rules, adapters, and fixed-board native parity. JSON/JSONL traces, CSV summaries, and Python rollout analysis support the research. SHA-256 checks verify the downloaded checkpoint. Docker packaging is prepared; the live Oracle service uses a native Linux build. Upstash Redis and Cloudflare Turnstile integrations are optional, not prerequisites for this demo." },
+      { title: "What I took from it", text: "The useful boundary was between calculation and judgment. Code can enumerate valid actions, calculate comparable properties, and enforce the rules. Jev can then choose from those structured options. I also explored fixed-weight combinations, uncertainty gates, and tail-risk interventions, but they did not establish an advantage worth claiming. This project made it possible to see when extra information changed a decision, when Jev followed a specialist, and when explicit search or learned game-specific values were already the stronger tool." }
+    ],
+    sources: [
+      { label: "Methods, results, and limitations", href: "https://jev-2048.vercel.app/research" },
+      { label: "Saved result data", href: "https://github.com/amansoory/JEV2048/blob/main/public/research-data.json" },
+      { label: "TypeSafe Jev", href: "https://typesafe.ai" },
+      { label: "TDL2048+ · Hung Guei · MIT", href: "https://github.com/moporgic/TDL2048" },
+      { label: "TDL2048+ license and checkpoint provenance", href: "https://github.com/amansoory/JEV2048/tree/main/deploy/ntuple" },
+      { label: "Expectimax adaptation · Robert Xiao and contributors · MIT", href: "https://github.com/amansoory/JEV2048/blob/main/SEARCH-SOLVER.md" },
+      { label: "Third-party notices and license links", href: "https://github.com/amansoory/JEV2048/blob/main/THIRD_PARTY_NOTICES.md" }
+    ],
+    github: "https://github.com/amansoory/JEV2048",
+    live: "https://jev-2048.vercel.app",
+    demoPreview: "https://jev-2048.vercel.app/play",
+    preview: { src: "/projects/jev-2048-preview.png", alt: "Jev 2048 live app with colorful boards, bot selection, seeded gameplay controls, and decision inspection." },
+    accessNote: "Open the demo to play or compare bots. Jev uses a live API; service availability and credits can affect play.",
+    featured: true,
+    placeholder: false,
+  },
+
   {
     slug: "degree-planner-ai",
     number: "01",
@@ -345,7 +391,7 @@ export const coursework: string[] = [
 
 export const portfolioCopy = {
   workNote:
-    "Degree Planner AI, VibeSafe, and Industry Resilience link to live sites. The other previews illustrate how the projects work.",
+    "Jev 2048, Degree Planner AI, VibeSafe, and Industry Resilience link to live sites. The other previews illustrate how the projects work.",
   experienceNote: "# agents, reliable systems, and teaching",
   skillsNote: "These are tools I’ve used in my projects and internships.",
   courseworkLabel: "Coursework at UNC Chapel Hill",

@@ -3033,3 +3033,11 @@ h2 > span {
     transform: none;
   }
 }
+
+/* Optional interactive preview on project case studies. */
+.project-live-demo { margin: 2rem 0 4rem; padding: clamp(1rem, 3vw, 2rem); border: 1px solid var(--border); border-radius: 1rem; }
+.project-live-demo h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: .75rem; }
+.project-live-demo p { max-width: 65ch; line-height: 1.7; margin-bottom: 1rem; }
+.project-live-demo a { display: inline-block; margin: .75rem 1rem; text-decoration: underline; text-underline-offset: .25em; }
+.project-source-links { padding-left: 1.2rem; display: grid; gap: .85rem; }
+.project-source-links a { text-decoration: underline; text-underline-offset: .25em; overflow-wrap: anywhere; }
