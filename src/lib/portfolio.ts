@@ -24,12 +24,12 @@ export const profile: Profile = {
   degree: "BS in Computer Science · Minor in Data Science",
   heroLines: [
     "Computer science at UNC Chapel Hill.",
-    "Working on AI agents, backend systems, and interactive software.",
+    "Recent work: a catalog-grounded chatbot and a classifier-driven 2048 experiment.",
   ],
   introduction:
     "I’m studying computer science at UNC Chapel Hill, with a minor in Data Science. I expect to finish my BS in May 2027.",
   about:
-    "My interests span AI agents, backend systems, databases, security, and interactive software. I’ve also helped 200+ students learn Python, explaining everything from control flow to memory diagrams in labs and office hours.",
+    "Most of my recent work connects a model to a database, an API, and an interface someone can actually use. At Timing, that meant retrieving interaction history before an agent ranked contacts for follow-up. In my own projects, I’ve built catalog search with citations and served a pretrained C++ game model from an ARM server. I like being able to inspect what happened when something goes wrong. Teaching Python to 200+ students also gave me plenty of practice explaining a bug without hiding behind jargon.",
   email: "armanmansoorhassan@gmail.com",
   github: "https://github.com/amansoory",
   linkedin: "https://linkedin.com/in/arman-hassan1",
@@ -77,21 +77,21 @@ export const projects: Project[] = [
     accent: "amber",
     visual: "grid",
     visualLabels: [],
-    description: "Play 2048 or compare the same Jev classifier with different inputs, a search algorithm, and a pretrained reinforcement-learning bot. Inspect the information behind each move.",
+    description: "A 2048 experiment comparing TypeSafe Jev, expectimax search, and a pretrained TD-learning bot. Change the information Jev sees, replay seeded games, and inspect each decision.",
     tags: ["TypeSafe Jev", "Next.js", "React", "TypeScript", "Expectimax", "TD learning", "C++", "Oracle Cloud", "Vercel"],
     year: "2026",
     role: "Game engine, experiment design, native integration, and deployment",
     duration: null,
-    problem: "I started because I was curious how Jev would play 2048. Instead of asking it to classify arbitrary examples, I wanted a task with clear rules, measurable outcomes, and consequences that build up over hundreds of decisions. Could a fast general-purpose classifier compete with an algorithm built specifically for the game? And could that specialist help it make better choices?",
-    approach: "The first version asked Jev to choose a direction. I moved that simulation into code: the engine calculates every legal resulting board, shuffles anonymous candidate labels, and asks Jev to choose an outcome. All current Jev variants use the same model without project-specific fine-tuning. They differ in what they receive: boards alone, calculated features, expectimax search summaries, pretrained n-tuple values, or both experts. Directions and expert recommendations stay hidden; Jev owns the final choice.",
-    outcome: "The live app supports human play and side-by-side bot comparisons, including two simultaneous Jev boards. Each board keeps playing independently until game over. Inspect shows candidate boards, choice probabilities, supplied features, specialist agreement, token usage, and timing. Seeded restarts and saved decision traces make the comparisons repeatable. Choice probabilities describe Jev’s preferences, not the chance of winning.",
-    lessons: "More expert information did not automatically mean better decisions. An earlier two-seed pilot improved from a mean score of 796 with raw Jev to 10,770 with calculated features and 34,276 with expectimax assistance, but the assisted version agreed with expectimax on 3,554 of 3,559 audited moves. That is evidence of strong influence, not independent planning. Later blinded arbitration did not demonstrate a benefit over always choosing one expert. The current anonymous-input variants have not completed a frozen multi-seed benchmark.",
+    problem: "I wanted to test how TypeSafe Jev plays 2048. The game has clear rules and measurable results, so I could compare a general-purpose classifier with bots built for the game. The main question: does giving Jev board features or specialist scores help it choose better moves?",
+    approach: "The game engine calculates the board after every legal move. It shuffles the options and gives them anonymous labels, then asks Jev to choose. Each variant uses the same model, without project-specific fine-tuning. What changes is the input: boards, calculated features, expectimax search scores, learned n-tuple values, or both specialists. Jev cannot see the move directions or either specialist’s recommended move.",
+    outcome: "You can play yourself or compare bots side by side, including two Jev variants. Each board runs to game over independently. The inspector shows the options Jev saw, its choice probabilities, features, specialist agreement, token use, and timing. Seeded restarts and saved decision traces make runs repeatable. Choice probabilities show the model’s preferences, not its chance of winning.",
+    lessons: "Extra information did not always lead to better decisions. In an early two-seed pilot, mean scores rose from 796 with raw Jev to 10,770 with board features and 34,276 with expectimax assistance. But the assisted version matched expectimax on 3,554 of 3,559 checked moves: it mostly followed the search bot. Later tests hid the specialists’ identities and asked Jev to choose between them; that did not beat consistently using one specialist. The current anonymous-input variants still need a multi-seed benchmark with fixed settings.",
     details: [
-      { title: "The learned specialist: 67.1 million pattern weights", text: "N-tuple uses Hung Guei’s pretrained TDL2048+ 4×6 checkpoint: four tables of 16,777,216 float32 values, or 67,108,864 learned weights in total. These are temporal-difference-learned board-pattern values, not language-model parameters or weights I trained. The unchanged native selector greedily scores immediate reward plus the resulting board’s value. Jev can receive normalized values for all candidates alongside search measurements; the current combined version does not blend them into a fixed weighted recommendation." },
+      { title: "The learned bot: pretrained board-pattern values", text: "The n-tuple bot uses Hung Guei’s pretrained TDL2048+ checkpoint: four tables holding about 67.1 million board-pattern weights learned through temporal-difference training. I did not train these weights. The original C++ selector scores each move using its immediate reward plus the resulting board’s learned value. Jev can receive normalized scores for every option alongside expectimax results, then make its own choice." },
       { title: "What the specialist comparison showed", text: "Across five matched development seeds, n-tuple won all five comparisons: mean score 222,849.6 versus 45,553.6 for this app’s bounded JavaScript expectimax implementation. One n-tuple run reached 32,768. Both bots consumed the same tile-value and shuffled cell-priority sequences; actual spawn cells could differ after their boards diverged. Five seeds are descriptive evidence, not proof of general superiority, and these results do not represent every expectimax implementation." },
-      { title: "From browser to native inference", text: "Next.js and React run on Vercel. Server-side routes call the TypeSafe SDK or an authenticated HTTPS n-tuple service on an Oracle Cloud ARM64 Ubuntu VM. A Python HTTP wrapper talks over stdin/stdout to one persistent C++ worker, loading the verified checkpoint once. Nginx terminates TLS with a Let’s Encrypt certificate; systemd supervises the loopback-only service. The native 32,768 tile encoding limit is explicit, and unsupported boards fail rather than silently switching bots. Hosted inference time includes network overhead, not just native computation." },
-      { title: "Interfaces, tools, and reproducibility", text: "The interface uses Tailwind CSS, shadcn-style components with Radix UI, Lucide icons, Motion, Recharts, and locally bundled DM Sans. Web Workers and Node worker threads keep search and structural calculations off the main event loop. A TypeScript controller owns the game state, legal-move validation, seeded spawning, and stale-response protection. Playwright and focused Node tests cover controls, rules, adapters, and fixed-board native parity. JSON/JSONL traces, CSV summaries, and Python rollout analysis support the research. SHA-256 checks verify the downloaded checkpoint. Docker packaging is prepared; the live Oracle service uses a native Linux build. Upstash Redis and Cloudflare Turnstile integrations are optional, not prerequisites for this demo." },
-      { title: "What I took from it", text: "The useful boundary was between calculation and judgment. Code can enumerate valid actions, calculate comparable properties, and enforce the rules. Jev can then choose from those structured options. I also explored fixed-weight combinations, uncertainty gates, and tail-risk interventions, but they did not establish an advantage worth claiming. This project made it possible to see when extra information changed a decision, when Jev followed a specialist, and when explicit search or learned game-specific values were already the stronger tool." }
+      { title: "Serving the C++ bot from Oracle Cloud", text: "The Next.js and React app runs on Vercel. Server routes call the TypeSafe SDK or an authenticated HTTPS service on an Oracle Cloud ARM64 Ubuntu VM. That service uses Python to send requests to a persistent C++ worker, which loads the checkpoint once. Nginx and Let’s Encrypt handle HTTPS; systemd keeps the local service running. Boards beyond the native 32,768 tile limit return an error instead of switching bots. Reported response time includes the network round trip." },
+      { title: "Tools, tests, and repeatable runs", text: "The interface uses Tailwind CSS, shadcn-style components with Radix UI, Lucide icons, Motion, Recharts, and locally bundled DM Sans. Web Workers and Node worker threads keep search and structural calculations off the main event loop. A TypeScript controller owns the game state, legal-move validation, seeded spawning, and stale-response protection. Playwright and focused Node tests cover controls, rules, adapters, and fixed-board native parity. JSON/JSONL traces, CSV summaries, and Python rollout analysis support the research. SHA-256 checks verify the downloaded checkpoint. Docker packaging is prepared; the live Oracle service uses a native Linux build. Upstash Redis and Cloudflare Turnstile integrations are optional, not prerequisites for this demo." },
+      { title: "What I took from it", text: "This experiment helped me separate rule-based calculation from model decisions. Code lists legal moves and calculates their features; Jev chooses from those options. I also tested weighted combinations, switching based on uncertainty, and checks for risky moves, but found no clear advantage to report. The decision traces show when extra context helps, when Jev follows a specialist, and when search or learned board values already work better." }
     ],
     sources: [
       { label: "Methods, results, and limitations", href: "https://jev-2048.vercel.app/research" },
@@ -351,26 +351,42 @@ export const experience: Experience[] = [
   },
 ];
 
-export const skills: { id: string; name: string; items: string[] }[] = [
+export const skills: { id: string; name: string; description: string; items: string[] }[] = [
   {
     id: "01",
     name: "Languages",
-    items: ["Python", "TypeScript / JavaScript", "Java / C"],
+    description: "Python for data and services, TypeScript for interfaces, and C++ when I need to work with a native model.",
+    items: ["Python", "TypeScript / JavaScript", "Java / C / C++", "SQL", "HTML / CSS"],
   },
   {
     id: "02",
-    name: "Interfaces",
-    items: ["Next.js / React", "React Native / Expo", "Streamlit"],
+    name: "Web & mobile",
+    description: "React and Next.js for stateful interfaces, with keyboard controls, loading states, and usable mobile layouts.",
+    items: ["Next.js / React", "React Native / Expo", "Tailwind CSS", "Streamlit"],
   },
   {
     id: "03",
-    name: "Systems",
-    items: ["FastAPI / Node.js", "PostgreSQL / Redis", "Docker / GitHub Actions"],
+    name: "Backend & databases",
+    description: "Request validation, SQL queries and indexes, and Redis caching. I’ve used these to connect services and reduce repeated work.",
+    items: ["FastAPI / Node.js", "REST APIs", "PostgreSQL / SQL indexing", "Redis"],
   },
   {
     id: "04",
-    name: "AI & Data",
-    items: ["AWS Bedrock / Claude", "pgvector / RAG", "scikit-learn / pandas"],
+    name: "AI & retrieval",
+    description: "I turn source documents into embeddings, retrieve relevant passages, and pass that context to a model. I also test structured classification with Jev.",
+    items: ["AWS Bedrock / Titan embeddings", "Claude / OpenAI API / TypeSafe Jev", "RAG / LLM agents", "pgvector / Amazon S3 Vectors"],
+  },
+  {
+    id: "05",
+    name: "Machine learning & data",
+    description: "Cleaning time-series data, fitting regression models, and comparing runs with fixed seeds and saved results.",
+    items: ["scikit-learn / regression", "pandas / NumPy", "Data cleaning / time-series analysis", "Seeded evaluation / decision traces"],
+  },
+  {
+    id: "06",
+    name: "Cloud & delivery",
+    description: "Vercel for web apps and an Oracle ARM VM for native inference, with Nginx, systemd, and browser tests before release.",
+    items: ["AWS S3 / IAM", "Oracle Cloud / Vercel", "Docker / Git / GitHub Actions", "Nginx / Linux / systemd", "Playwright / pytest"],
   },
 ];
 
@@ -393,7 +409,7 @@ export const portfolioCopy = {
   workNote:
     "Jev 2048, Degree Planner AI, VibeSafe, and Industry Resilience link to live sites. The other previews illustrate how the projects work.",
   experienceNote: "# agents, reliable systems, and teaching",
-  skillsNote: "These are tools I’ve used in my projects and internships.",
+  skillsNote: "The tools below are from my projects and internships, grouped by what I use them for.",
   courseworkLabel: "Coursework at UNC Chapel Hill",
   visualFooter: "ILLUSTRATION / NOT LIVE OUTPUT",
   caseFocus: "The interesting part",

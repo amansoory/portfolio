@@ -40,6 +40,7 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const progressBar = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
+  const chapterNav = useRef<HTMLElement>(null);
   const activeTrace = useRef<SVGPathElement>(null);
   const signal = useRef<SVGCircleElement>(null);
   const heroProgress = useMotionValue(0);
@@ -94,10 +95,10 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
     let flow: { element: HTMLElement; top: number; height: number }[] = [];
     let chapters: { element: HTMLElement; top: number; label: string }[] = [];
     const labelMap: Record<string, string> = {
-      work: "MODULES",
-      experience: "HISTORY",
-      skills: "TOOLKIT",
-      about: "HUMAN",
+      work: "PROJECTS",
+      experience: "EXPERIENCE",
+      skills: "SKILLS",
+      about: "ABOUT",
       contact: "CONTACT",
     };
     const bounds = (node: Element) => {
@@ -117,7 +118,7 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
         document.documentElement.scrollHeight - innerHeight,
       );
       const sequence = element!.querySelector<HTMLElement>(".hero-sequence");
-      const strip = element!.querySelector<HTMLElement>(".process-strip");
+      const traceOrigin = element!.querySelector<HTMLElement>("#work");
       const contact = element!.querySelector<HTMLElement>("#contact");
       if (sequence) {
         heroTop = bounds(sequence).y + rootTop;
@@ -140,28 +141,28 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
       ).map((node) => ({
         element: node,
         top: bounds(node).y + rootTop,
-        label: labelMap[node.id] || "SOURCE",
+        label: labelMap[node.id] || "INTRO",
       }));
-      if (strip && contact) {
-        const stripBounds = bounds(strip);
+      if (traceOrigin && contact) {
+        const originBounds = bounds(traceOrigin);
         const contactBounds = bounds(contact);
         const spine = Math.max(
           8,
-          stripBounds.x - (preferences.mobile ? 12 : 22),
+          originBounds.x - (preferences.mobile ? 12 : 22),
         );
-        const start = stripBounds.y - (preferences.mobile ? 24 : 56);
-        const elbow = stripBounds.y + stripBounds.height - 1;
+        const start = originBounds.y - (preferences.mobile ? 36 : 64);
+        const elbow = originBounds.y - 16;
         const end = contactBounds.y + contactBounds.height - 60;
-        const startX = stripBounds.x + stripBounds.width * 0.76;
+        const startX = originBounds.x + Math.min(160, originBounds.width * 0.25);
         const targets = Array.from(
           element!.querySelectorAll<HTMLElement>(
-            ".project-preview-link, main > section[id] > div > .section-label",
+            ".project-row, main > section[id] > div > .section-label",
           ),
         );
         const branches = targets.map((node) => {
           const b = bounds(node);
           const y =
-            b.y + (node.classList.contains("project-preview-link") ? 32 : 6);
+            b.y + (node.classList.contains("project-row") ? 32 : 6);
           return { path: `M ${spine} ${y} H ${b.x - 5}`, y };
         });
         traceGeometry = {
@@ -193,9 +194,18 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
       if (progressBar.current)
         progressBar.current.style.transform = `scaleX(${pageProgress})`;
       let chapter =
-        hero < 0.35 ? "SOURCE" : hero < 0.75 ? "EXECUTE" : "CONNECT";
+        "INTRO";
       for (const item of chapters) if (lead >= item.top) chapter = item.label;
       if (pageProgress > 0.995) chapter = "CONTACT";
+      let activeChapter = "top";
+      for (const item of chapters) {
+        if (y + innerHeight * 0.35 >= item.top) activeChapter = item.element.id;
+      }
+      if (pageProgress > 0.995) activeChapter = "contact";
+      chapterNav.current?.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
+        if (link.hash === `#${activeChapter}`) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      });
       if (readout.current)
         readout.current.textContent = `${chapter} / ${Math.round(
           pageProgress * 100,
@@ -317,7 +327,7 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
                 className="telemetry-readout"
                 aria-hidden="true"
               >
-                SOURCE / 00%
+                INTRO / 00%
               </span>
               {!preferences.reduced && (
                 <button
@@ -333,6 +343,23 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
               )}
             </div>
           </div>
+        )}
+        {preferences.ready && (
+          <nav ref={chapterNav} className="journey-chapters" aria-label="Page sections">
+            {[
+              ["top", "Intro"],
+              ["work", "Projects"],
+              ["skills", "Skills"],
+              ["about", "About"],
+              ["experience", "Experience"],
+              ["contact", "Contact"],
+            ].map(([id, label]) => (
+              <a key={id} href={`#${id}`} aria-label={`Jump to ${label}`}>
+                <span className="chapter-tooltip">{label}</span>
+                <span className="chapter-dot" aria-hidden="true" />
+              </a>
+            ))}
+          </nav>
         )}
         {trace && (
           <svg

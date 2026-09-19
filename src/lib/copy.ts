@@ -2,12 +2,12 @@
 export const copy = {
   hero: {
     greeting: "Hi, I’m",
-    title: ["From code", "to systems.", "AI agents", "and interactive tools."],
+    title: ["I build retrieval systems", "and software that", "makes model decisions", "inspectable."],
     edition: "PORTFOLIO / 2026",
-    work: "See my work",
+    work: "Explore my projects",
     about: "About me",
     scroll: "SCROLL THROUGH MY WORK",
-    path: "CODE → SYSTEMS → PROJECTS",
+    path: "NEXT: PROJECTS / IMPLEMENTATION / RESULTS",
   },
   process: {
     label: "HOW THE PIECES CONNECT",
@@ -32,19 +32,19 @@ export const copy = {
   about: {
     label: "ABOUT ME",
     title: ["A bit", "about me."],
-    art: "CODE, QUESTIONS, AND A LOT OF LEARNING.",
+    art: "UNC CHAPEL HILL · COMPUTER SCIENCE",
     index: "ARMAN / 001",
     resume: "My resume",
   },
   contact: {
     label: "GET IN TOUCH",
-    eyebrow: "HAVE A QUESTION OR AN IDEA?",
-    title: ["Want to", "talk", "code?"],
+    eyebrow: "CONTACT",
+    title: ["Get", "in", "touch."],
     note: "I’d be glad to hear from you.",
   },
   nav: {
     home: "Portfolio home",
-    work: "Work",
+    work: "Projects",
     experience: "Experience",
     about: "About",
     skills: "Skills",
@@ -68,7 +68,7 @@ export const copy = {
     viewCode: "View Code",
     live: "Live project",
   },
-  footer: "WRITTEN, BUILT, AND STILL LEARNING",
+  footer: "Next.js · TypeScript · Vercel",
   case: {
     pending: "I’m still adding the details for this project.",
     role: "MY WORK",
@@ -81,7 +81,7 @@ export const copy = {
     note: "An illustration of how it works, not live output.",
     alt: "Arman Hassan’s software projects and computer science portfolio.",
     title: "01 / PORTFOLIO",
-    lines: ["From code to systems.", "AI agents and interactive tools."],
+    lines: ["Retrieval systems and inspectable model decisions.", "Projects by Arman Hassan."],
   },
   notFound: {
     label: "404 / PAGE NOT FOUND",
@@ -95,7 +95,7 @@ export const copy = {
     retry: "Try again",
   },
   scene: {
-    caption: "A LOOK INSIDE THE SYSTEM",
+    caption: "SCROLL-CONTROLLED REQUEST DIAGRAM",
     scroll: "SCROLL TO EXPLORE",
     terminal: "system / example trace",
     alt: "A processor connected to client and service nodes. Scroll to separate its layers and follow a request through the system.",

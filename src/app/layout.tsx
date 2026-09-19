@@ -2,6 +2,7 @@ import { copy } from "@/lib/copy";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { ReadingRail } from "@/components/reading-rail";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/portfolio-ui";
 import { profile, siteDescription, siteUrl } from "@/lib/portfolio";
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {copy.nav.skip}
         </a>
         <SiteHeader />
+        <ReadingRail />
         {children}
         <SiteFooter />
       </body>

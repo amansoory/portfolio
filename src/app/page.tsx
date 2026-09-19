@@ -5,6 +5,8 @@ import {
   ArrowUpRight,
   Braces,
   Code2,
+  ChartColumn,
+  Cloud,
   Cpu,
   Database,
   GitBranch,
@@ -74,11 +76,6 @@ export default function Home() {
               <span className="hero-coordinates">{copy.hero.path}</span>
             </div>
           </section>
-          <nav className="career-overview section-shell" aria-label="Experience at a glance">
-            <a href="#experience"><span>Machine Learning Intern</span><strong>Timing</strong><p>LLM agents, retrieval, PostgreSQL and Redis</p></a>
-            <a href="#experience"><span>Software Engineering Intern</span><strong>Vogro</strong><p>Python automation, APIs and React</p></a>
-            <a href="#experience"><span>Teaching Assistant</span><strong>200+ students</strong><p>Python labs, debugging and office hours</p></a>
-          </nav>
         </div>
         <section
           className="work-section section-shell"
@@ -168,12 +165,118 @@ export default function Home() {
           </div>
         </section>
         <section
+          className="skills-section section-shell"
+          id="skills"
+          aria-labelledby="skills-title"
+        >
+          <Reveal>
+            <SectionLabel number="02">{copy.skills.label}</SectionLabel>
+            <div className="section-heading">
+              <h2 id="skills-title">
+                {copy.skills.title[0]}
+                <br />
+                <span>{copy.skills.title[1]}</span>
+              </h2>
+              <p>{portfolioCopy.skillsNote}</p>
+            </div>
+            <div className="skills-grid" data-flow>
+              {skills.map((group, i) => {
+                const Icon = [Code2, Braces, Database, Cpu, ChartColumn, Cloud][i];
+                return (
+                  <div
+                    className="skill-group"
+                    key={group.id}
+                    data-enter
+                    data-flow
+                  >
+                    <div className="skill-top">
+                      <Icon size={22} strokeWidth={1.4} />
+                      <span>/{group.id}</span>
+                    </div>
+                    <h3>{group.name}</h3>
+                    <p className="skill-description">{group.description}</p>
+                    <ul>
+                      {group.items.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+            <details className="coursework">
+              <summary>{portfolioCopy.courseworkLabel}</summary>
+              <ul>
+                {coursework.map((course) => (
+                  <li key={course}>{course}</li>
+                ))}
+              </ul>
+            </details>
+          </Reveal>
+        </section>
+        <section
+          className="about-section section-shell"
+          id="about"
+          aria-labelledby="about-title"
+        >
+          <Reveal>
+            <SectionLabel number="03">{copy.about.label}</SectionLabel>
+            <div className="about-grid">
+              <div
+                className="about-art"
+                aria-hidden="true"
+                data-enter="visual"
+                data-flow
+              >
+                <div className="about-art-grid" />
+                <div className="code-sculpture">
+                  <span>{"{"}</span>
+                  <i />
+                  <span>{"}"}</span>
+                </div>
+                <span className="about-art-label">{copy.about.art}</span>
+                <span className="about-art-index">{copy.about.index}</span>
+              </div>
+              <div className="about-copy">
+                <h2 id="about-title" data-enter>
+                  {copy.about.title[0]}
+                  <br />
+                  <span>{copy.about.title[1]}</span>
+                </h2>
+                <p className="about-intro" data-enter>
+                  {profile.introduction}
+                </p>
+                <p data-enter>{profile.about}</p>
+                <div className="about-meta" data-enter>
+                  <span>
+                    <MapPin size={15} />
+                    {profile.location}
+                  </span>
+                  <span>{profile.degree}</span>
+                  <span>
+                    <span className="status-dot" />
+                    {profile.availability}
+                  </span>
+                </div>
+                {profile.resume && <ResourceLink href={profile.resume}>
+                  {copy.about.resume}
+                </ResourceLink>}
+              </div>
+            </div>
+          </Reveal>
+        </section>
+        <section
           className="experience-section section-shell"
           id="experience"
           aria-labelledby="experience-title"
         >
           <Reveal>
-            <SectionLabel number="02">{copy.experience.label}</SectionLabel>
+            <SectionLabel number="04">{copy.experience.label}</SectionLabel>
+            <nav className="career-overview" aria-label="Experience at a glance">
+              <a href="#experience"><span>Machine Learning Intern</span><strong>Timing</strong><p>LLM agents, retrieval, PostgreSQL and Redis</p></a>
+              <a href="#experience"><span>Software Engineering Intern</span><strong>Vogro</strong><p>Python automation, APIs and React</p></a>
+              <a href="#experience"><span>Teaching Assistant</span><strong>200+ students</strong><p>Python labs, debugging and office hours</p></a>
+            </nav>
             <div className="split-section">
               <div>
                 <h2 id="experience-title">
@@ -225,106 +328,6 @@ export default function Home() {
                   </li>
                 ))}
               </ol>
-            </div>
-          </Reveal>
-        </section>
-        <section
-          className="skills-section section-shell"
-          id="skills"
-          aria-labelledby="skills-title"
-        >
-          <Reveal>
-            <SectionLabel number="03">{copy.skills.label}</SectionLabel>
-            <div className="section-heading">
-              <h2 id="skills-title">
-                {copy.skills.title[0]}
-                <br />
-                <span>{copy.skills.title[1]}</span>
-              </h2>
-              <p>{portfolioCopy.skillsNote}</p>
-            </div>
-            <div className="skills-grid" data-flow>
-              {skills.map((group, i) => {
-                const Icon = [Code2, Braces, Cpu, Database][i];
-                return (
-                  <div
-                    className="skill-group"
-                    key={group.id}
-                    data-enter
-                    data-flow
-                  >
-                    <div className="skill-top">
-                      <Icon size={22} strokeWidth={1.4} />
-                      <span>/{group.id}</span>
-                    </div>
-                    <h3>{group.name}</h3>
-                    <ul>
-                      {group.items.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-            <details className="coursework">
-              <summary>{portfolioCopy.courseworkLabel}</summary>
-              <ul>
-                {coursework.map((course) => (
-                  <li key={course}>{course}</li>
-                ))}
-              </ul>
-            </details>
-          </Reveal>
-        </section>
-        <section
-          className="about-section section-shell"
-          id="about"
-          aria-labelledby="about-title"
-        >
-          <Reveal>
-            <SectionLabel number="04">{copy.about.label}</SectionLabel>
-            <div className="about-grid">
-              <div
-                className="about-art"
-                aria-hidden="true"
-                data-enter="visual"
-                data-flow
-              >
-                <div className="about-art-grid" />
-                <div className="code-sculpture">
-                  <span>{"{"}</span>
-                  <i />
-                  <span>{"}"}</span>
-                </div>
-                <span className="about-art-label">{copy.about.art}</span>
-                <span className="about-art-index">{copy.about.index}</span>
-              </div>
-              <div className="about-copy">
-                <h2 id="about-title" data-enter>
-                  {copy.about.title[0]}
-                  <br />
-                  <span>{copy.about.title[1]}</span>
-                </h2>
-                <p className="about-intro" data-enter>
-                  {profile.introduction}
-                </p>
-                <p data-enter>{profile.about}</p>
-                <div className="about-meta" data-enter>
-                  <span>
-                    <MapPin size={15} />
-                    {profile.location}
-                  </span>
-                  <span>{profile.degree}</span>
-                  <span>
-                    <span className="status-dot" />
-                    {profile.availability}
-                  </span>
-                </div>
-                {profile.resume && <ResourceLink href={profile.resume}>
-                  {copy.about.resume}
-                </ResourceLink>}
-              </div>
             </div>
           </Reveal>
         </section>

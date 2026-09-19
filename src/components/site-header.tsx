@@ -19,8 +19,9 @@ import { ResourceLink } from "@/components/portfolio-ui";
 
 const links = [
   [copy.nav.work, "/#work"],
-  [copy.nav.experience, "/#experience"],
+  [copy.nav.skills, "/#skills"],
   [copy.nav.about, "/#about"],
+  [copy.nav.experience, "/#experience"],
 ];
 
 export function SiteHeader() {
