@@ -276,7 +276,7 @@ export default function Home() {
           <Reveal>
             <SectionLabel number="04">{copy.experience.label}</SectionLabel>
             <nav className="career-overview" aria-label="Experience at a glance">
-              <a href="#experience"><span>Machine Learning Intern</span><strong>Timing</strong><p>Contact follow-ups and backend performance</p></a>
+              <a href="#experience"><span>Software Engineering Intern</span><strong>Timing</strong><p>Contact follow-ups and backend performance</p></a>
               <a href="#experience"><span>Software Engineering Intern</span><strong>Vogro</strong><p>Python automation, APIs and React</p></a>
               <a href="#experience"><span>Teaching Assistant</span><strong>200+ students</strong><p>Python labs, debugging and office hours</p></a>
             </nav>
