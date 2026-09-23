@@ -116,7 +116,7 @@ export const projects: Project[] = [
 
   {
     slug: "degree-planner-ai",
-    cardDescription: "A chatbot that answers questions about UNC degree requirements and links to the official catalog.",
+    cardDescription: "A Next.js chatbot that searches UNC degree requirements with AWS Bedrock and Claude, then links answers to the official catalog.",
     number: "01",
     name: "Degree Planner AI",
     category: "UNC degree-planning chatbot",
@@ -124,20 +124,15 @@ export const projects: Project[] = [
     accent: "mint",
     visual: "planner",
     visualLabels: ["UNC CATALOG", "PROGRAM ROUTING", "SOURCES CITED", "REQUIREMENTS"],
-    description:
-      "A chatbot for UNC students that answers degree requirement questions using official catalog content and the courses a student reports taking.",
-    tags: ["Next.js", "TypeScript", "AWS Bedrock", "Titan embeddings", "S3 Vectors", "Claude", "Vercel"],
+    description: "A degree-planning chatbot for UNC students, built with Next.js, TypeScript and AWS Bedrock. It searches official catalog material, answers questions with Claude, and cites the pages behind each answer.",
+    tags: ["Next.js", "React", "TypeScript", "AWS Bedrock", "Claude", "Titan embeddings", "Amazon S3 Vectors", "RAG", "Vercel"],
     year: "2026",
     role: "Application and retrieval system",
     duration: null,
-    problem:
-      "I built Degree Planner AI to help UNC students understand what they still need to graduate. They can ask about a major in plain language and get an answer grounded in the official course catalog.",
-    approach:
-      "I converted catalog pages for UNC majors and minors into structured text and indexed them in an AWS Bedrock Knowledge Base. Titan embeddings are stored in Amazon S3 Vectors. A Next.js app on Vercel retrieves the relevant requirements and uses Claude to answer from them.",
-    outcome:
-      "The app lists required courses, identifies minimum grades stated in the catalog, and asks what courses a student has completed to show what remains. Answers link back to the catalog pages used.",
-    lessons:
-      "I initially considered filtering unrelated questions by search relevance score. Testing showed that unrelated and valid questions scored almost the same, so I added a lightweight Claude routing step. It identifies the student’s program for more targeted retrieval and stops off-topic requests before generating an answer.",
+    problem: "UNC degree requirements are spread across catalog pages for majors, minors and individual courses. I built a chatbot that lets students ask about those requirements and compare them with the courses they report taking.",
+    approach: "I converted catalog pages into structured text and indexed them in an AWS Bedrock Knowledge Base. Titan embeddings turn the text into numerical representations for search, stored in Amazon S3 Vectors. The Next.js and TypeScript app retrieves relevant requirements and passes them to Claude, which writes an answer using those sources. The app runs on Vercel.",
+    outcome: "Students can ask about required courses and minimum grades, then provide completed courses to see what remains. Answers link to the catalog pages used so students can check the requirements themselves. The app works from reported course history, not an official transcript or degree audit.",
+    lessons: "Search relevance scores alone did not reliably separate valid degree questions from unrelated requests. I added a small Claude routing step to identify the student’s program and reject off-topic questions before retrieving material for the answer.",
     github: null,
     live: "https://unc-degree-rag.vercel.app/",
     preview: {
@@ -149,6 +144,7 @@ export const projects: Project[] = [
   },
   {
     slug: "vibesafe",
+    cardDescription: "A Python security scanner with 51 rules, framework configuration checks and optional Claude review. GitHub Actions posts findings on pull requests.",
     number: "02",
     name: "VibeSafe",
     category: "Repository security scanner",
@@ -162,20 +158,15 @@ export const projects: Project[] = [
       "CI → BLOCK",
       "PR → FINDINGS",
     ],
-    description:
-      "VibeSafe scans repositories for security problems, posts findings on pull requests, and fails CI when it finds critical vulnerabilities.",
-    tags: ["Python", "Claude API", "FastAPI", "Docker", "GitHub Actions"],
+    description: "A repository security scanner built with Python, FastAPI and Claude. It combines 51 rules across 10 categories with framework-specific checks, produces Markdown or JSON reports, and can block a pull request when it finds a critical issue.",
+    tags: ["Python", "FastAPI", "Claude API", "Click", "Jinja2", "React", "Vite", "Tailwind CSS", "SQLAlchemy", "SQLite", "Docker", "GitHub Actions"],
     year: null,
     role: "Security scanner development",
     duration: null,
-    problem:
-      "VibeSafe checks code where it’s being reviewed. It looks for security problems in repositories and pull requests, then reports what it finds.",
-    approach:
-      "The Python scanner combines regex checks and configuration parsing with deeper Claude analysis across 51 rules and 10 vulnerability categories. FastAPI provides the interface, Docker packages the service, and GitHub Actions connects scans to pull requests.",
-    outcome:
-      "It posts findings directly on pull requests. Critical vulnerabilities fail CI, making the result part of the review workflow rather than a separate report.",
-    lessons:
-      "The interesting part is combining checks that follow fixed rules with LLM analysis. Severity then determines whether CI should fail.",
+    problem: "Security checks are easier to act on when they run where code is being reviewed. I built VibeSafe to scan a repository, explain the findings, and report them directly on pull requests rather than requiring a separate manual review.",
+    approach: "The scanner runs in three stages. Regular expressions find patterns such as exposed secrets and unsafe functions. Configuration checks inspect framework settings for Next.js and Express. An optional Claude stage reviews code in more detail. A Click command-line interface runs the scan, while shared finding records feed Markdown and JSON reports. Jinja2 templates format prompts and reports. The optional FastAPI web service adds accounts and scan history using SQLAlchemy, with SQLite as its default database. The landing page uses React, Vite and Tailwind CSS.",
+    outcome: "The GitHub Actions integration can post findings as pull-request comments and fail the workflow on critical findings. The first two scan stages work without an API key. Docker packages the scanner so the same checks can run locally or in CI. Findings still need review; a passing scan is not a guarantee that a repository is secure.",
+    lessons: "Fixed checks handle repeatable patterns, while the optional model review examines issues that need more context. Keeping those stages separate makes it possible to run useful checks without paying for a model call on every scan.",
     github: "https://github.com/amansoory/VibeSafe",
     live: "https://vibe-safe-pt7v.vercel.app",
     preview: {
@@ -186,7 +177,7 @@ export const projects: Project[] = [
   },
   {
     slug: "industry-resilience",
-    cardDescription: "A hackathon project comparing how more than 90 industries declined and recovered during COVID.",
+    cardDescription: "A Python pipeline and Streamlit dashboard modeling COVID-era drawdown and recovery across 90+ industries, using 10,000+ time-series data points.",
     number: "03",
     name: "Industry Resilience Predictor",
     category: "Economic data / machine learning",
@@ -194,20 +185,15 @@ export const projects: Project[] = [
     accent: "blue",
     visual: "chart",
     visualLabels: ["90+ industries", "DRAWDOWN", "RECOVERY", "TIME →"],
-    description:
-      "An interactive dashboard and regression model that compare COVID-era drawdown and recovery across 90+ industries. Built during a hackathon.",
-    tags: ["Python", "pandas", "scikit-learn", "Streamlit", "Docker"],
-    year: null,
+    description: "Built at Carolina Data Challenge in September 2025, this project uses Python, pandas and scikit-learn to estimate drawdown and recovery trends across more than 90 industries. An interactive Streamlit dashboard lets users compare the results.",
+    tags: ["Python", "pandas", "scikit-learn", "Streamlit", "Docker", "Git", "GitHub"],
+    year: "2025",
     role: "Data pipeline, model & dashboard",
-    duration: "Hackathon project",
-    problem:
-      "This project looks at two parts of COVID-era disruption: how far an industry fell and how it recovered. The dashboard lets people compare those patterns across industries.",
-    approach:
-      "The pipeline cleans time-series data with pandas and trains a regression model for drawdown and recovery. A Streamlit dashboard makes the industry comparisons interactive, with Docker packaging the project.",
-    outcome:
-      "The result is a tool for exploring 90+ industries side by side. People can compare performance through the dashboard instead of working through the underlying data themselves.",
-    lessons:
-      "The technical work connects raw time-series data to a regression model and an interactive comparison.",
+    duration: "Carolina Data Challenge · September 2025",
+    problem: "Our team wanted to compare how industries responded to COVID-era disruption: how far they declined, how quickly they recovered, and what those patterns could suggest about another downturn. We used U.S. space-economy data from 2012 to 2023, including industry value added and price indexes.",
+    approach: "I cleaned and merged more than 10,000 time-series data points with pandas, handling missing values and dates that did not line up across sources. I then trained a scikit-learn regression model to estimate each industry’s drawdown and recovery trends. Drawdown describes the decline from an earlier level; recovery tracks how the series moves back afterward.",
+    outcome: "I built a Streamlit dashboard for comparing industries and visualizing predicted recovery metrics. Users can also enter a shock percentage to explore a possible downturn and recovery path based on past trends. The predictions are estimates from historical data, not guarantees of how an industry will perform.",
+    lessons: "Preparing the data was an important part of the model: the series had to use consistent dates before their trends could be compared. Docker kept the runtime environment consistent, while Git and GitHub helped our team share and combine changes during the hackathon.",
     github: "https://github.com/amansoory/Industry-Resilience-Predictor-CDC2025",
     live: "https://industry-resilience-predictor.streamlit.app/",
     preview: {
@@ -218,6 +204,7 @@ export const projects: Project[] = [
   },
   {
     slug: "space-battle",
+    cardDescription: "A Python and Pygame shooter with enemy waves, projectile collisions, health and ammunition systems. Built in under 24 hours; first place at Hack110.",
     number: "04",
     name: "Arcade-Style Space Battle",
     category: "Interactive software / Hack110",
@@ -229,27 +216,22 @@ export const projects: Project[] = [
       "TARGET ACQUIRED",
       "SPAWN → COLLIDE → ADVANCE",
     ],
-    description:
-      "A Pygame space battle with enemy spawning, collision detection, and increasing difficulty. Built in under 24 hours; first place at Hack110.",
-    tags: ["Python", "Pygame", "OOP"],
+    description: "A real-time arcade shooter built with Python and Pygame in under 24 hours. It combines player movement, shooting, enemy waves, collision detection, and health and ammunition tracking. The game won first place at Hack110.",
+    tags: ["Python", "Pygame", "Object-oriented programming", "Git", "VS Code"],
     year: null,
     role: "Gameplay systems",
     duration: "Under 24 hours",
-    problem:
-      "The challenge was getting a playable space battle together in under 24 hours, including enemies, collisions, and increasing difficulty.",
-    approach:
-      "Python and Pygame handle the collision, spawning, and game-state systems. Object-oriented code organizes the gameplay as enemies appear and the difficulty increases.",
-    outcome:
-      "The playable arcade game won first place at Hack110.",
-    lessons:
-      "The interesting part is how the systems interact: enemies spawn, collisions change the game state, and difficulty keeps the next round moving.",
+    problem: "The hackathon goal was to finish a playable game in under 24 hours. That meant getting movement, shooting, enemies and game-state updates working together, with controls and feedback that players could understand immediately.",
+    approach: "The code separates player behavior, enemy spawning and movement, projectiles, and game-state tracking into modules. The game loop processes player input and updates those systems each frame. Collision checks handle interactions between the player, enemies and bullets, while the state tracks health, ammunition and score.",
+    outcome: "The finished game includes multiple enemy types, increasing difficulty, and more than 30 visual and audio assets. Health and ammunition feedback help players track what is happening as waves become harder. The project placed first at Hack110.",
+    lessons: "Separating the gameplay systems made it easier to change enemy behavior without rewriting player controls or score tracking. Pygame handled input, drawing and audio, and Git tracked changes while the game came together.",
     github: "https://github.com/amansoory/Space-Battles-Hackathon-Winner",
     live: null,
     placeholder: false,
   },
   {
     slug: "dungeon-hero",
-    cardDescription: "A turn-based Java game with grid movement and rule-based enemies.",
+    cardDescription: "A Java grid-game engine with movement validation, collisions and enemy rules, organized with MVC and the Observer pattern.",
     number: "05",
     name: "Dungeon Hero",
     category: "Game architecture / Java",
@@ -262,26 +244,22 @@ export const projects: Project[] = [
       "PLAYER",
       "ENEMY",
     ],
-    description:
-      "A turn-based Java grid game with pathfinding, collision resolution, and rule-based enemies. Game logic stays separate from state and rendering.",
-    tags: ["Java", "OOP", "MVC", "Observer Pattern"],
+    description: "A turn-based Java game engine for a grid containing players, enemies, obstacles and objectives. More than 10 classes handle movement, pathfinding, collisions and game-state updates, with MVC and the Observer pattern separating rules from the display.",
+    tags: ["Java", "Object-oriented programming", "MVC", "Observer pattern", "Git", "IntelliJ IDEA"],
     year: null,
     role: "Game logic & architecture",
     duration: null,
-    problem:
-      "Each turn needs to account for movement, collisions, and enemy rules. Dungeon Hero handles those decisions separately from drawing the board.",
-    approach:
-      "The game is organized across 10+ Java classes using MVC and the Observer pattern. The logic handles pathfinding, collision resolution, and enemy behavior; state and rendering have their own responsibilities.",
-    outcome:
-      "The result is a turn-based game with movement and enemy rules that don’t depend on the rendering code.",
-    lessons:
-      "The architecture is the part to look at here: MVC separates the pieces, and the Observer pattern connects state changes to the view. The preview illustrates pathfinding rather than running the game.",
+    problem: "Each turn can affect several parts of the game: a player moves, an enemy reacts, a collision occurs, or a win or loss condition changes. I wanted those rules to stay understandable without mixing them into the code that draws the board.",
+    approach: "The engine uses model-view-controller architecture. The model stores the grid and entity state, the controller handles input and game rules, and the view displays the result. Classes separate entity management, pathfinding, movement validation and collision handling. The Observer pattern notifies the view when state changes.",
+    outcome: "The game validates moves, resolves interactions between entities, and checks win and loss conditions as the grid changes. Enemy rules and movement logic can be maintained separately from rendering. The portfolio preview illustrates the grid logic; it does not run the Java game in the browser.",
+    lessons: "This project gave me practice dividing responsibilities between Java classes. The Observer pattern lets the display respond to state changes without putting display updates inside every movement rule. I used IntelliJ IDEA for development and Git for version control.",
     github: "https://github.com/amansoory/Dungeon-Hero-LogicGrid",
     live: null,
     placeholder: false,
   },
   {
     slug: "initial-d-racing-game",
+    cardDescription: "A Unity and C# racing game with physics-based steering, drifting and a following camera, built with two teammates at HackNC 2024.",
     number: "06",
     name: "Initial D Racing Game",
     category: "3D arcade racing / HackNC 2024",
@@ -289,20 +267,15 @@ export const projects: Project[] = [
     accent: "amber",
     visual: "racing",
     visualLabels: ["HACKNC 2024", "UNITY / C#", "MOUNTAIN TRACK"],
-    description:
-      "A 3D arcade racing game on a stylized mountain track, built with Rajin Islam and Humza Hassan for HackNC 2024.",
-    tags: ["Unity", "C#", "3D Assets", "Vehicle Physics"],
+    description: "A 3D arcade racing game built in Unity with C# for HackNC 2024. Rajin Islam, Humza Hassan and I combined physics-based vehicle controls, drifting, a following camera, and a mountain-track environment.",
+    tags: ["Unity", "C#", "Unity Physics", "Unity Asset Store", "3D assets", "Visual Studio / VS Code"],
     year: "2024",
     role: "Team project with Rajin Islam and Humza Hassan",
     duration: "HackNC 2024",
-    problem:
-      "We wanted to build a short arcade racing experience around a stylized mountain course for HackNC 2024.",
-    approach:
-      "Rajin Islam, Humza Hassan, and I built it in Unity with C#. We worked on vehicle physics, steering and drifting, a following camera, and the integrated 3D assets that make up the track.",
-    outcome:
-      "The result is a 3D racing game set on a mountain track. Its systems handle driving, drifting, camera following, and the track environment together.",
-    lessons:
-      "The interesting part was making the driving feel connected to the track. Steering, drifting, camera movement, and the 3D environment all had to support the same arcade racing loop.",
+    problem: "Our team wanted to make a short arcade racing game inspired by Initial D. The main challenge was making the car, camera and mountain course work together so players could steer, brake and drift around the track.",
+    approach: "We used C# scripts and Unity physics components for acceleration, braking and steering, including wheel and suspension setup. A camera tracks the vehicle as it moves through the course. We assembled the scene with free vehicle and environment assets and worked through script, component and object-parenting issues in the Unity Editor.",
+    outcome: "The result is a playable mountain-track racing game with vehicle controls, drifting and camera tracking. It was a team hackathon project, not a custom-built game engine or a collection of models we created from scratch.",
+    lessons: "Getting the components to work together took more than writing the driving script. Camera tracking, wheel physics and scene setup all affected the result. We used tutorials, Unity Learn, free Asset Store resources and debugging assistance; the repository credits those sources.",
     github: "https://github.com/amansoory/Hack-NC-Initial-D",
     live: null,
     placeholder: false,
