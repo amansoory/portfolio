@@ -3223,7 +3223,7 @@ h1, h2, h3, .career-overview strong { font-family: var(--font-display), var(--fo
 .career-overview strong { display: block; margin: .55rem 0; color: #f2f5ed; font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -.04em; }
 .career-overview p { font-size: 1rem; line-height: 1.65; color: #c5cec0; }
 .career-overview a:hover, .career-overview a:focus-visible { background: #17221a; }
-.project-row { padding: clamp(1.2rem, 3vw, 2.5rem); margin-bottom: 1.8rem; border: 1px solid #354231; border-radius: 1.2rem; background: #101a14; gap: clamp(1.5rem, 4vw, 4rem); }
+.project-row { padding: clamp(1.2rem, 3vw, 2.5rem); margin-bottom: 1.8rem; border: 1px solid #354231; border-radius: 1.2rem; background: rgb(16 26 20 / 0.82); gap: clamp(1.5rem, 4vw, 4rem); }
 .project-row.project-featured { border-top: 3px solid var(--theme-accent); }
 .project-copy h3 { font-size: clamp(2rem, 3.8vw, 3.3rem); line-height: 1.1; font-weight: 600; }
 .project-copy > p { font-size: 1.08rem; line-height: 1.75; color: #d0d8ca; }
