@@ -6,11 +6,14 @@ for (const width of [360, 390, 430, 768, 1024, 1440]) {
     await page.goto("/");
     await expect(page.locator(".scroll-journey")).toHaveAttribute("data-motion", "active");
     if (width < 768) {
-      const toggle = page.getByRole("button", { name: "Pause motion" });
+      // The motion toggle lives in the bottom status bar, fully on screen and clear of its neighbors.
+      const toggle = page.locator(".status-bar").getByRole("button", { name: "Pause motion" });
       const bounds = await toggle.boundingBox();
-      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(68);
-      for (const other of await page.locator(".site-header a, .site-header button").all()) {
-        if (!(await other.isVisible())) continue;
+      expect(bounds!.y).toBeGreaterThanOrEqual(900 - 48);
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(900);
+      expect(bounds!.width).toBeGreaterThanOrEqual(32);
+      for (const other of await page.locator(".status-bar button").all()) {
+        if (!(await other.isVisible()) || (await other.getAttribute("aria-label")) === "Pause motion") continue;
         const b = await other.boundingBox();
         expect(b!.x + b!.width <= bounds!.x || b!.x >= bounds!.x + bounds!.width).toBe(true);
       }
@@ -127,7 +130,7 @@ test("experience is readable without JavaScript", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto(`http://127.0.0.1:${process.env.PORTFOLIO_TEST_PORT || "3100"}/`);
   await expect(page.locator(".experience-entry")).toHaveCount(3);
-  await expect(page.locator("#experience-timing")).toContainText("1,000 contacts");
+  await expect(page.locator("#experience-timing")).toContainText("1,000+ contact records");
   await expect(page.locator("#experience-unc")).toContainText("200+");
   await expect(page.locator("#experience-vogro")).toContainText("500+");
   await expect(page.locator(".hero-education")).toContainText("Comp Sci + Data Sci");

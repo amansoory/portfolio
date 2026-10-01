@@ -66,6 +66,13 @@ export default async function ProjectPage({ params }: Props) {
           </SectionLabel>
           <h1>{project.name}</h1>
           <p>{project.description}</p>
+          {project.metrics?.length ? (
+            <ul className="project-metrics" aria-label={`${project.name} results`}>
+              {project.metrics.map((metric) => (
+                <li key={metric}>{metric}</li>
+              ))}
+            </ul>
+          ) : null}
           <div className="project-tags">
             {project.tags.map((tag) => (
               <Badge key={tag} variant="outline">

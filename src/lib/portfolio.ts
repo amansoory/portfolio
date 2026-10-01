@@ -34,8 +34,8 @@ export const profile: Profile = {
   github: "https://github.com/amansoory",
   linkedin: "https://linkedin.com/in/arman-hassan1",
   resume: "/Arman_Hassan_Resume.pdf",
-  // Enable indexing after the final deployment URL and resume file are supplied.
-  draft: true,
+  // Draft mode emits noindex, blocks crawling, and empties the sitemap.
+  draft: false,
 };
 
 export type Project = {
@@ -49,6 +49,8 @@ export type Project = {
   visual: "scan" | "chart" | "arcade" | "grid" | "planner" | "racing";
   visualLabels: string[];
   tags: string[];
+  /** Short, verifiable results shown as badges on project cards and case studies. */
+  metrics?: string[];
   year: string | null;
   role: string;
   duration: string | null;
@@ -75,15 +77,17 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "jev-2048",
-    number: "07",
+    number: "01",
     name: "Jev 2048",
     category: "Decision systems / interactive experiment",
     label: "JEV 2048",
     accent: "amber",
     visual: "grid",
     visualLabels: [],
-    description: "Play 2048 or compare the same Jev classifier with different inputs, a search algorithm, and a pretrained reinforcement-learning bot. Inspect the information behind each move.",
+    description: "Can a general-purpose AI classifier play 2048? Compare TypeSafe’s Jev model with a search algorithm and a pretrained reinforcement-learning bot, then inspect the information behind every move.",
     tags: ["TypeSafe Jev", "Next.js", "React", "TypeScript", "Expectimax", "TD learning", "C++", "Oracle Cloud", "Vercel"],
+    // Figures as stated on the resume.
+    metrics: ["Pilot mean score 796 → 34,276", "67.1M-weight C++ model", "77,928 API requests for $5.45"],
     year: "2026",
     role: "Game engine, experiment design, native integration, and deployment",
     duration: null,
@@ -118,7 +122,7 @@ export const projects: Project[] = [
 
   {
     slug: "degree-planner-ai",
-    number: "01",
+    number: "02",
     name: "Degree Planner AI",
     category: "RAG chatbot / UNC degree planning",
     label: "RETRIEVE → CITE → EXPLAIN",
@@ -126,19 +130,24 @@ export const projects: Project[] = [
     visual: "planner",
     visualLabels: ["UNC CATALOG", "PROGRAM ROUTING", "SOURCES CITED", "REQUIREMENTS"],
     description:
-      "A chatbot for UNC students that answers degree requirement questions using official catalog content and the courses a student reports taking.",
-    tags: ["Next.js", "TypeScript", "AWS Bedrock", "Titan embeddings", "S3 Vectors", "Claude", "Vercel"],
+      "A degree-planning assistant for UNC students covering 200+ majors and minors plus general education. It answers from the official catalog with clickable citations and checks uploaded schedules against requirements.",
+    tags: ["Next.js", "TypeScript", "AWS Bedrock", "Claude", "Titan embeddings", "S3 Vectors", "Python", "GitHub Actions", "Vercel"],
+    metrics: ["Eval pass rate 11% → 100%", "200+ programs and tracks", "80+ offline tests in CI"],
     year: "2026",
-    role: "Application and retrieval system",
+    role: "Retrieval pipeline, guardrails, evals, UI, and deployment",
     duration: null,
     problem:
-      "I built Degree Planner AI to help UNC students understand what they still need to graduate. They can ask about a major in plain language and get an answer grounded in the official course catalog.",
+      "I built Degree Planner AI to help UNC students understand what they still need to graduate. They can ask about a major in plain language, or upload a photo of their schedule, and get an answer grounded in the official course catalog.",
     approach:
-      "I converted catalog pages for UNC majors and minors into structured text and indexed them in an AWS Bedrock Knowledge Base. Titan embeddings are stored in Amazon S3 Vectors. A Next.js app on Vercel retrieves the relevant requirements and uses Claude to answer from them.",
+      "A Python scraper turns catalog pages for 202 majors, minors, and tracks plus the IDEAs in Action general education pages into structured documents, indexed with Titan embeddings in Amazon S3 Vectors through a Bedrock Knowledge Base. Most questions are routed to the right program in code; only unclear ones use a Claude classifier call. The routed program’s requirements are always included, sources are numbered, and every citation is verified on the server before it reaches the student.",
     outcome:
-      "The app lists required courses, identifies minimum grades stated in the catalog, and asks what courses a student has completed to show what remains. Answers link back to the catalog pages used.",
+      "Answers lead with the direct answer, cite the exact catalog page, and ask one focused question when the program or degree is ambiguous. Students can add courses by photo, PDF, or pasted text; minimum-grade rules are checked in code, so a C- is never counted toward “C or better.” Rate limits and an AWS Budget action that blocks the app at $10 a month cap spending.",
     lessons:
-      "I initially considered filtering unrelated questions by search relevance score. Testing showed that unrelated and valid questions scored almost the same, so I added a lightweight Claude routing step. It identifies the student’s program for more targeted retrieval and stops off-topic requests before generating an answer.",
+      "Measuring changed how I built it. An 18-case live eval graded in code against catalog facts scored the first working version at 2 of 18 cases; the rebuilt pipeline passes all 18. The biggest fixes came from moving judgment the model kept getting wrong, like comparing letter grades, into deterministic code, and from sending less but more relevant context: about 58% fewer input tokens per answer.",
+    details: [
+      { title: "Guardrails", text: "Answers are grounded only in retrieved catalog text, and the bot says so when the catalog doesn’t cover a question. Retrieved text and uploads are treated as data, never instructions. Citation numbers that don’t match a real source are removed, off-topic requests are declined, and grade comparisons are computed rather than generated." },
+      { title: "Testing and CI/CD", text: "Offline suites with mocked Bedrock calls cover routing, retrieval assembly, citations, grade checks, uploads, and spending limits. GitHub Actions runs lint, type checks, the tests, and a production build on every push and pull request, and Vercel deploys from GitHub. The live eval runs only on demand because it calls the model." },
+    ],
     github: "https://github.com/amansoory/unc-degree-rag",
     live: "https://planuncdegree.site/",
     preview: {
@@ -150,7 +159,7 @@ export const projects: Project[] = [
   },
   {
     slug: "vibesafe",
-    number: "02",
+    number: "03",
     name: "VibeSafe",
     category: "AI security scanner agent",
     label: "CHECKING THE CODE",
@@ -166,6 +175,7 @@ export const projects: Project[] = [
     description:
       "VibeSafe scans repositories for security problems, posts findings on pull requests, and fails CI when it finds critical vulnerabilities. Built in collaboration with Humza Hassan.",
     tags: ["Python", "Claude API", "FastAPI", "Docker", "GitHub Actions"],
+    metrics: ["51 rules / 10 vulnerability categories", "Fails CI on critical findings"],
     year: "2026",
     role: "Security scanner development",
     duration: null,
@@ -187,7 +197,7 @@ export const projects: Project[] = [
   },
   {
     slug: "industry-resilience",
-    number: "03",
+    number: "04",
     name: "Industry Resilience Predictor",
     category: "Economic data / machine learning",
     label: "DISRUPTION → RECOVERY",
@@ -197,6 +207,7 @@ export const projects: Project[] = [
     description:
       "An interactive dashboard and regression model that compare COVID-era drawdown and recovery across 90+ industries. Built during a hackathon.",
     tags: ["Python", "pandas", "scikit-learn", "Streamlit", "Docker"],
+    metrics: ["90+ industries compared"],
     year: "2025",
     role: "Data pipeline, model & dashboard",
     duration: "Hackathon project",
@@ -218,7 +229,7 @@ export const projects: Project[] = [
   },
   {
     slug: "space-battle",
-    number: "04",
+    number: "05",
     name: "Arcade-Style Space Battle",
     category: "Interactive software / Hack110",
     label: "TARGET / ENGAGE",
@@ -232,6 +243,7 @@ export const projects: Project[] = [
     description:
       "A Pygame space battle with enemy spawning, collision detection, and increasing difficulty. Built in under 24 hours; first place at Hack110.",
     tags: ["Python", "Pygame", "OOP"],
+    metrics: ["1st place, Hack110", "Built in under 24 hours"],
     year: "2024",
     role: "Gameplay systems",
     duration: "Under 24 hours",
@@ -254,7 +266,7 @@ export const projects: Project[] = [
   },
   {
     slug: "dungeon-hero",
-    number: "05",
+    number: "06",
     name: "Dungeon Crawler",
     category: "Game architecture / Java",
     label: "GRID / NEXT MOVE",
@@ -291,7 +303,7 @@ export const projects: Project[] = [
   },
   {
     slug: "initial-d-racing-game",
-    number: "06",
+    number: "07",
     name: "Initial D Racing Game",
     category: "3D arcade racing / HackNC 2024",
     label: "STEER → DRIFT → DESCEND",
@@ -338,9 +350,9 @@ export const experience: Experience[] = [
     company: "Timing",
     shortCompany: "Timing",
     contributions: [
-      "Built an LLM agent with the OpenAI API to rank LinkedIn contacts by priority, cutting manual input by 60%.",
-      "Built a RAG pipeline using pgvector across 1,000 contacts to generate personalized outreach drafts.",
-      "Cut API latency from approximately 450 ms to under 90 ms through PostgreSQL indexing and Redis caching.",
+      "Built a GPT-4o agent using function calling and structured outputs to rank contacts from LinkedIn interaction history ingested via OAuth, replacing manual contact triage with automated priority scoring.",
+      "Implemented a RAG pipeline using OpenAI embeddings and pgvector similarity search over 1,000+ contact records in PostgreSQL, retrieving relevant context to generate personalized outreach drafts.",
+      "Cut API latency by 80% (450 ms to under 90 ms) with composite PostgreSQL indexes and Redis caching.",
     ],
     tools: ["OpenAI API", "PostgreSQL", "pgvector", "Redis"],
   },
@@ -352,22 +364,22 @@ export const experience: Experience[] = [
     shortCompany: "UNC",
     context: "Introduction to Programming",
     contributions: [
-      "Supported 200+ students in introductory Python through weekly office hours and labs. Helped students debug code and understand control flow, functions, object-oriented programming, and memory diagrams.",
-      "Graded assignments and worked with course staff on feedback to improve student performance.",
+      "Supported 200+ students through weekly Python labs and office hours, diagnosing bugs and teaching control flow, functions, OOP, runtime analysis, and memory diagrams.",
+      "Reviewed and graded programming assignments, provided code-level feedback, and coordinated with course staff to address recurring student misconceptions.",
     ],
     tools: ["Python", "VS Code"],
   },
   {
     id: "vogro",
-    period: "June to August 2025",
+    period: "May to August 2025",
     role: "Software Engineering Intern",
     company: "Vogro",
     shortCompany: "Vogro",
     context: "Stanford-affiliated",
     contributions: [
-      "Built Python tools to automate repetitive data tasks, with logging and error handling that made issues easier to find and fix. Reduced manual processing time by 40%.",
-      "Connected the React website, backend services, and outside tools through FastAPI and Node.js APIs, helping ship 3+ releases used by 500+ people.",
-      "Reduced unnecessary API calls and cleaned up UI components to make pages load 20% faster for elderly users on older devices.",
+      "Automated data transfer and cleanup across internal tools with Python scripts, deduplicating and validating records to reduce manual data-processing time by 40%.",
+      "Built REST API integrations with FastAPI and Node.js connecting a React frontend, backend services, and third-party tools across 3+ releases serving 500+ users.",
+      "Reduced page load time by 20% by eliminating redundant API requests and refactoring React components for improved performance on lower-end devices.",
     ],
     tools: ["Python", "FastAPI", "Node.js", "React"],
   },
@@ -390,13 +402,13 @@ export const skills: { id: string; name: string; items: string[]; emphasis: stri
   {
     id: "03",
     name: "Backend & Infrastructure",
-    items: ["FastAPI / Node.js", "PostgreSQL / Redis", "Vercel / Oracle Cloud", "AWS S3 / IAM", "Docker / GitHub Actions", "Git / GitHub"],
+    items: ["FastAPI / Node.js / REST APIs", "PostgreSQL / Redis", "Vercel / Oracle Cloud", "AWS S3 / IAM", "Docker / GitHub Actions", "Git / GitHub"],
     emphasis: ["Vercel", "Git"],
   },
   {
     id: "04",
     name: "AI & Data",
-    items: ["OpenAI API / Claude", "AWS Bedrock / Titan embeddings", "pgvector / RAG", "Amazon S3 Vectors", "scikit-learn / pandas / NumPy"],
+    items: ["OpenAI API / Claude", "AWS Bedrock / Titan embeddings", "RAG / pgvector", "Tool calling / structured outputs", "LLM evals / guardrails", "Amazon S3 Vectors", "scikit-learn / pandas / NumPy"],
     emphasis: ["OpenAI API"],
   },
 ];
@@ -440,6 +452,13 @@ export const visualData = {
   ],
 };
 
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+/**
+ * Canonical origin for metadata, robots, and the sitemap. NEXT_PUBLIC_SITE_URL wins; otherwise
+ * Vercel's production domain (a system variable available at build time) keeps share images and
+ * canonical links pointing at the live site instead of localhost.
+ */
+export const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined);
 export const siteDescription =
   "I’m Arman Hassan, a computer science student at UNC Chapel Hill graduating in May 2027. Here’s my work on AI agents, backend systems, security, and interactive software.";

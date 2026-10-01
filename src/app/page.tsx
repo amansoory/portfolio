@@ -107,6 +107,7 @@ export default function Home() {
                 <article
                   className={`project-row theme-${project.accent}${project.featured ? " project-featured" : ""}`}
                   data-flow
+                  data-file={`work/${project.number}-${project.slug}.tsx`}
                 >
                   <Link
                     href={`/projects/${project.slug}`}
@@ -137,6 +138,13 @@ export default function Home() {
                       </Link>
                     </h3>
                     <p data-enter>{project.description}</p>
+                    {project.metrics?.length ? (
+                      <ul className="project-metrics" data-enter aria-label={`${project.name} results`}>
+                        {project.metrics.map((metric) => (
+                          <li key={metric}>{metric}</li>
+                        ))}
+                      </ul>
+                    ) : null}
                     <p className="project-contribution" data-enter><span>My work</span>{project.role}</p>
                     <div className="project-tags" data-enter>
                       {project.tags.map((tag) => (

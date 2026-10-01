@@ -4,6 +4,9 @@ import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/portfolio-ui";
+import { CommandPalette } from "@/components/command-palette";
+import { CircuitField } from "@/components/circuit-field";
+import { TextLens } from "@/components/text-lens";
 import { profile, siteDescription, siteUrl } from "@/lib/portfolio";
 
 const displayFont = Space_Grotesk({ variable: "--font-display", subsets: ["latin"], display: "swap" });
@@ -50,12 +53,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${displayFont.variable} dark antialiased`}
     >
       <body id="top">
+        <CircuitField />
         <a className="skip-link" href="#main-content" tabIndex={0}>
           {copy.nav.skip}
         </a>
         <SiteHeader />
         {children}
         <SiteFooter />
+        <CommandPalette />
+        <TextLens />
       </body>
     </html>
   );

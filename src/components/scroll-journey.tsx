@@ -11,7 +11,20 @@ import {
 } from "react";
 import { useMotionValue, useMotionValueEvent, type MotionValue } from "motion/react";
 import { createPortal } from "react-dom";
-import { Pause, Play } from "lucide-react";
+import { Command, GitBranch, Pause, Play } from "lucide-react";
+
+/** Section ids rendered as source files in the status bar. Projects use their own data-file. */
+const sectionFiles: Record<string, string> = {
+  top: "hero.tsx",
+  work: "work/index.tsx",
+  experience: "experience.ts",
+  skills: "toolkit.ts",
+  about: "about.md",
+  contact: "contact.sh",
+};
+// The status bar counts the page in "lines" of this many CSS pixels.
+const LINE_HEIGHT = 22;
+const commit = process.env.NEXT_PUBLIC_COMMIT_SHA?.slice(0, 7) ?? "";
 
 type Journey = {
   heroProgress: MotionValue<number>;
@@ -48,7 +61,10 @@ type Trace = {
 export function ScrollJourney({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const progressBar = useRef<HTMLDivElement>(null);
-  const readout = useRef<HTMLSpanElement>(null);
+  const fileName = useRef<HTMLSpanElement>(null);
+  const lineReadout = useRef<HTMLSpanElement>(null);
+  const percentReadout = useRef<HTMLSpanElement>(null);
+  const statusFill = useRef<HTMLSpanElement>(null);
   const sectionNav = useRef<HTMLElement>(null);
   const activeTrace = useRef<SVGPathElement>(null);
   const signal = useRef<SVGCircleElement>(null);
@@ -64,6 +80,12 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
   useMotionValueEvent(heroProgress, "change", (value) => {
     root.current?.style.setProperty("--hero-progress", clamp(value).toFixed(4));
   });
+  // The command palette can pause or resume motion too.
+  useEffect(() => {
+    const toggle = () => setPaused((value) => !value);
+    window.addEventListener("journey:toggle-motion", toggle);
+    return () => window.removeEventListener("journey:toggle-motion", toggle);
+  }, []);
   // SVG geometry commits after measurement; update its initial drawing once.
   useEffect(() => {
     if (trace) window.dispatchEvent(new Event("scroll"));
@@ -106,14 +128,9 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
     probe.style.cssText = "position:fixed;top:0;left:0;width:0;visibility:hidden;pointer-events:none;";
     document.body.appendChild(probe);
     let flow: { element: HTMLElement; top: number; height: number }[] = [];
-    let chapters: { element: HTMLElement; top: number; label: string }[] = [];
-    const labelMap: Record<string, string> = {
-      work: "MODULES",
-      experience: "HISTORY",
-      skills: "TOOLKIT",
-      about: "HUMAN",
-      contact: "CONTACT",
-    };
+    let chapters: { element: HTMLElement; top: number }[] = [];
+    let files: { top: number; name: string }[] = [];
+    let totalLines = 1;
     const bounds = (node: Element) => {
       const r = node.getBoundingClientRect();
       return {
@@ -162,8 +179,16 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
       ).map((node) => ({
         element: node,
         top: bounds(node).y + rootTop,
-        label: labelMap[node.id] || "SOURCE",
       }));
+      // Status bar "files": each section, plus each project card while it is being read.
+      files = [
+        ...chapters.map((item) => ({ top: item.top, name: sectionFiles[item.element.id] ?? `${item.element.id}.tsx` })),
+        ...Array.from(element!.querySelectorAll<HTMLElement>("[data-file]")).map((node) => ({
+          top: bounds(node).y + rootTop,
+          name: node.dataset.file ?? "",
+        })),
+      ].sort((a, b) => a.top - b.top);
+      totalLines = Math.max(1, Math.ceil(document.documentElement.scrollHeight / LINE_HEIGHT));
       if (strip && contact) {
         const stripBounds = bounds(strip);
         const contactBounds = bounds(contact);
@@ -207,28 +232,30 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
       if (disposed) return;
       if (measureNeeded) measure();
       const y = window.scrollY;
-      const pageProgress = clamp(y / totalScroll);
+      // Content outside this root (footer, status bar padding, late-loading images) can change the
+      // document height after the last measurement; re-measure positions when it does.
+      if (Math.abs(document.documentElement.scrollHeight - innerHeight - totalScroll) > 2) measure();
+      const pageProgress = y >= totalScroll - 2 ? 1 : clamp(y / totalScroll);
       const lead = y + innerHeight * 0.66;
       const hero = clamp((y - heroTop) / heroDistance);
       element!.style.setProperty("--page-progress", pageProgress.toFixed(4));
       // Telemetry always reflects the actual page location, even with motion paused.
       if (progressBar.current)
         progressBar.current.style.transform = `scaleX(${pageProgress})`;
-      let chapter =
-        hero < 0.35 ? "SOURCE" : hero < 0.75 ? "EXECUTE" : "CONNECT";
-      for (const item of chapters) if (lead >= item.top) chapter = item.label;
-      if (pageProgress > 0.995) chapter = "CONTACT";
-      if (readout.current)
-        readout.current.textContent = `${chapter} / ${Math.round(
-          pageProgress * 100,
-        )
-          .toString()
-          .padStart(2, "0")}%`;
       // Location markers follow reading position even when decorative motion is paused.
       const readingPosition = y + innerHeight * 0.35;
       let activeSection = "top";
       for (const item of chapters) if (readingPosition >= item.top) activeSection = item.element.id;
       if (pageProgress > 0.995) activeSection = "contact";
+      let file = sectionFiles.top;
+      for (const item of files) if (lead >= item.top) file = item.name;
+      if (pageProgress > 0.995) file = sectionFiles.contact;
+      if (fileName.current && fileName.current.textContent !== file) fileName.current.textContent = file;
+      const line = `Ln ${(Math.floor(y / LINE_HEIGHT) + 1).toLocaleString("en-US")} / ${totalLines.toLocaleString("en-US")}`;
+      if (lineReadout.current && lineReadout.current.textContent !== line) lineReadout.current.textContent = line;
+      const percent = `${Math.round(pageProgress * 100)}%`;
+      if (percentReadout.current && percentReadout.current.textContent !== percent) percentReadout.current.textContent = percent;
+      if (statusFill.current) statusFill.current.style.transform = `scaleX(${pageProgress})`;
       sectionNav.current?.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
         if (link.hash === `#${activeSection}`) link.setAttribute("aria-current", "location");
         else link.removeAttribute("aria-current");
@@ -348,16 +375,36 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
             <div className="telemetry-track" aria-hidden="true">
               <div ref={progressBar} className="telemetry-fill" />
             </div>
-            <div className="telemetry-console">
-              <span
-                ref={readout}
-                className="telemetry-readout"
-                aria-hidden="true"
+            <div className="status-bar" role="group" aria-label={copy.status.label}>
+              <span className="status-branch" aria-hidden="true">
+                <GitBranch size={11} /> {copy.status.branch}
+                {commit && <span className="status-commit">@{commit}</span>}
+              </span>
+              <button
+                type="button"
+                className="status-file"
+                onClick={() => window.dispatchEvent(new Event("palette:open"))}
+                aria-label={copy.status.palette}
               >
-                SOURCE / 00%
+                <span className="status-root" aria-hidden="true">{copy.status.root}/</span>
+                <span ref={fileName} aria-hidden="true">{sectionFiles.top}</span>
+              </button>
+              <span className="status-spacer" />
+              <span ref={lineReadout} className="status-lines" aria-hidden="true">
+                Ln 1 / 1
+              </span>
+              <span className="status-meter" aria-hidden="true">
+                <span ref={statusFill} className="status-meter-fill" />
+              </span>
+              <span ref={percentReadout} className="status-percent" aria-hidden="true">
+                0%
+              </span>
+              <span className="status-open" aria-hidden="true">
+                <span className="status-dot" /> {copy.status.openToWork}
               </span>
               {!preferences.reduced && (
                 <button
+                  type="button"
                   className="journey-toggle"
                   onClick={() => setPaused((value) => !value)}
                   aria-pressed={paused}
@@ -368,6 +415,16 @@ export function ScrollJourney({ children }: { children: ReactNode }) {
                   <span>{paused ? copy.motion.resume : copy.motion.pause}</span>
                 </button>
               )}
+              <button
+                type="button"
+                className="status-palette"
+                onClick={() => window.dispatchEvent(new Event("palette:open"))}
+                aria-label={copy.status.palette}
+                title={copy.status.palette}
+              >
+                <Command size={11} aria-hidden="true" />
+                <span>{copy.status.shortcut}</span>
+              </button>
             </div>
           </div>,
           document.body,

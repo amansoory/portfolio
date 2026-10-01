@@ -10,7 +10,7 @@ test("desktop scene loads, pauses, and exposes working project navigation", asyn
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "I have a few ideas.",
   );
-  await expect(page.locator("canvas")).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator("canvas:not(.circuit-field)")).toBeVisible({ timeout: 20_000 });
   await expect(page.locator(".poster-hidden")).toHaveCount(1);
   await page.getByRole("button", { name: "Pause motion" }).click();
   await expect(
@@ -36,7 +36,7 @@ test("mobile menu is keyboard accessible and pages fit narrow screens", async ({
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(page.locator(".system-poster")).toBeVisible();
-  await expect(page.locator("canvas")).toHaveCount(0);
+  await expect(page.locator("canvas:not(.circuit-field)")).toHaveCount(0);
   await page.getByRole("button", { name: "Open navigation" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
@@ -75,7 +75,7 @@ test("reduced motion and unavailable WebGL retain the complete portfolio", async
       sceneRequests.push(request.url());
   });
   await page.goto("/");
-  await expect(page.locator("canvas")).toHaveCount(0);
+  await expect(page.locator("canvas:not(.circuit-field)")).toHaveCount(0);
   await expect(page.locator(".system-poster")).toBeVisible();
   await expect(page.getByRole("button", { name: "Pause motion" })).toHaveCount(
     0,
@@ -152,7 +152,8 @@ test("scroll story reverses exactly and the page never pins", async ({
     "data-stage",
     "0",
   );
-  await expect(page.locator(".telemetry-readout")).toHaveText("SOURCE / 00%");
+  await expect(page.locator(".status-file")).toContainText("hero.tsx");
+  await expect(page.locator(".status-percent")).toHaveText("0%");
 });
 
 test("anchor destinations and keyboard focus bypass entrances", async ({
@@ -204,8 +205,8 @@ test("anchor destinations and keyboard focus bypass entrances", async ({
   await expect(page.locator("#work-title")).toBeVisible();
   await page.goto("/#contact");
   await expect
-    .poll(() => page.locator(".telemetry-readout").textContent())
-    .toContain("CONTACT");
+    .poll(() => page.locator(".status-file").textContent())
+    .toContain("contact.sh");
   await expect(page.locator("#contact-title")).toHaveCSS("opacity", "1");
 });
 
@@ -277,7 +278,7 @@ test("mobile signals progress without pinning and live reduced-motion changes ar
     "data-motion",
     "active",
   );
-  await expect(page.locator("canvas")).toHaveCount(0);
+  await expect(page.locator("canvas:not(.circuit-field)")).toHaveCount(0);
   await page.evaluate(() => scrollTo({ top: 250, behavior: "instant" }));
   await expect
     .poll(() =>
@@ -296,9 +297,9 @@ test("mobile signals progress without pinning and live reduced-motion changes ar
     0,
   );
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await expect(page.locator("canvas")).toHaveCount(0);
+  await expect(page.locator("canvas:not(.circuit-field)")).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await expect(page.locator("canvas")).toHaveCount(1);
+  await expect(page.locator("canvas:not(.circuit-field)")).toHaveCount(1);
 });
 
 test("case studies, missing routes, metadata, and honest empty links", async ({
@@ -313,9 +314,10 @@ test("case studies, missing routes, metadata, and honest empty links", async ({
   ]) {
     const response = await page.goto(`/projects/${slug}`);
     expect(response?.status()).toBe(200);
+    // Published: pages are indexable (draft mode would emit noindex).
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       "content",
-      /noindex/,
+      /^index, follow$/,
     );
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
       "content",
@@ -335,7 +337,7 @@ test("case studies, missing routes, metadata, and honest empty links", async ({
   expect(image.status()).toBe(200);
   expect(image.headers()["content-type"]).toContain("image/png");
   expect(await (await request.get("/robots.txt")).text()).toContain(
-    "Disallow: /",
+    "Allow: /",
   );
 });
 
@@ -359,4 +361,34 @@ test("core content and navigation work without JavaScript", async ({
     page.getByRole("heading", { name: "How I built it" }),
   ).toBeVisible();
   await context.close();
+});
+
+test("status bar tracks reading position and the command palette navigates", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await expect(page.locator(".status-bar")).toBeVisible();
+  await expect(page.locator(".status-file")).toContainText("hero.tsx");
+  await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+  await expect.poll(() => page.locator(".status-percent").textContent()).toBe("100%");
+  await expect(page.locator(".status-file")).toContainText("contact.sh");
+  await page.keyboard.press("Control+k");
+  const input = page.getByRole("combobox", { name: "Command palette" });
+  await expect(input).toBeFocused();
+  await input.fill("vibe");
+  await expect(page.getByRole("option")).toHaveCount(1);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/projects\/vibesafe/);
+});
+
+test("mobile status bar opens the command palette", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const bar = page.locator(".status-bar");
+  await expect(bar).toBeVisible();
+  await page.getByRole("button", { name: "Open command palette" }).first().click();
+  await expect(page.getByRole("combobox", { name: "Command palette" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("combobox", { name: "Command palette" })).toBeHidden();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
 });

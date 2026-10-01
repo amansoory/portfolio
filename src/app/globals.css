@@ -3260,3 +3260,363 @@ h1, h2, h3, .career-overview strong { font-family: var(--font-display), var(--fo
   from { opacity: 0; transform: translateY(3px); }
   to { opacity: 1; transform: none; }
 }
+
+/* ---------- Status bar (editor-style reading position) ---------- */
+:root {
+  --status-bar-height: 30px;
+}
+body {
+  padding-bottom: var(--status-bar-height);
+}
+.status-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 43;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: var(--status-bar-height);
+  padding: 0 10px 0 14px;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: content-box;
+  background: #0b110dee;
+  border-top: 1px solid #2a3826;
+  color: #9fb294;
+  font: 10.5px/1 var(--font-geist-mono), monospace;
+  letter-spacing: 0.2px;
+  pointer-events: auto;
+  backdrop-filter: saturate(1.2);
+}
+.status-bar button {
+  color: inherit;
+  font: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.status-branch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #b6dca1;
+}
+.status-commit {
+  color: #6f8466;
+}
+.status-file {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 46vw;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.status-file > span:last-child {
+  color: #dbe8d2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.status-root {
+  color: #6f8466;
+}
+.status-file:hover,
+.status-file:focus-visible,
+.status-palette:hover,
+.status-palette:focus-visible {
+  background: #1a2418;
+  color: #dbe8d2;
+}
+.status-spacer {
+  flex: 1;
+}
+.status-lines {
+  font-variant-numeric: tabular-nums;
+}
+.status-meter {
+  position: relative;
+  width: 84px;
+  height: 6px;
+  border: 1px solid #34432d;
+  border-radius: 1px;
+  overflow: hidden;
+  background: repeating-linear-gradient(90deg, transparent 0 7px, #18211699 7px 8px);
+}
+.status-meter-fill {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, #b6dca1 0 7px, transparent 7px 8px);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.status-percent {
+  min-width: 34px;
+  text-align: right;
+  color: #dbe8d2;
+  font-variant-numeric: tabular-nums;
+}
+.status-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-open .status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #83d27c;
+  box-shadow: 0 0 0 3px #83d27c1f;
+}
+.status-bar .journey-toggle {
+  min-height: 22px;
+  padding: 0 7px;
+  font-size: 10.5px;
+}
+.status-palette {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid #34432d !important;
+  border-radius: 3px;
+}
+/* The old corner readout is replaced by the status bar. */
+.telemetry-console {
+  display: none;
+}
+@media (max-width: 767px) {
+  :root {
+    --status-bar-height: 40px;
+  }
+  .status-bar {
+    gap: 8px;
+    padding-left: 8px;
+    font-size: 11px;
+  }
+  .status-branch,
+  .status-lines,
+  .status-open,
+  .status-root,
+  .status-palette > span,
+  .status-bar .journey-toggle > span {
+    display: none;
+  }
+  .status-file {
+    max-width: none;
+    flex: 1;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid #2a3826;
+  }
+  .status-spacer {
+    display: none;
+  }
+  .status-meter {
+    width: 48px;
+  }
+  .status-palette,
+  .status-bar .journey-toggle {
+    min-width: 36px;
+    height: 32px;
+    min-height: 32px;
+    justify-content: center;
+  }
+}
+
+/* ---------- Command palette ---------- */
+.command-palette {
+  top: 18vh !important;
+  left: 50% !important;
+  /* Centered horizontally; anchored near the top instead of vertically centered. */
+  translate: -50% 0 !important;
+  width: min(620px, calc(100vw - 24px)) !important;
+  max-width: none !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border-radius: 8px !important;
+  background: #0c120e !important;
+  border: 1px solid #34432d;
+  box-shadow: 0 30px 80px -20px #000c, 0 0 0 1px #b6dca10d;
+  font-family: var(--font-geist-mono), monospace;
+  overflow: hidden;
+}
+.palette-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #263323;
+}
+.palette-prompt {
+  color: #b6dca1;
+  font-size: 14px;
+}
+.palette-input input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: #e3eedc;
+  font: 15px var(--font-geist-mono), monospace;
+}
+.palette-input input::placeholder {
+  color: #6f8466;
+}
+.palette-kbd,
+.palette-footer kbd {
+  padding: 2px 6px;
+  border: 1px solid #34432d;
+  border-radius: 3px;
+  color: #8ea383;
+  font: 10px var(--font-geist-mono), monospace;
+}
+.palette-results {
+  max-height: min(380px, 52vh);
+  overflow-y: auto;
+  padding: 6px;
+  margin: 0;
+  list-style: none;
+  scrollbar-width: thin;
+}
+.palette-group {
+  padding: 10px 10px 5px;
+  color: #6f8466;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.palette-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 5px;
+  color: #b9c9af;
+  font-size: 13px;
+  cursor: pointer;
+}
+.palette-item[aria-selected="true"] {
+  background: #1a2618;
+  color: #eef6e8;
+  box-shadow: inset 2px 0 0 #b6dca1;
+}
+.palette-item svg {
+  flex-shrink: 0;
+  color: #8ea383;
+}
+.palette-item[aria-selected="true"] svg {
+  color: #b6dca1;
+}
+.palette-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.palette-hint {
+  color: #6f8466;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40%;
+}
+.palette-empty {
+  padding: 22px 12px;
+  color: #6f8466;
+  font-size: 13px;
+  text-align: center;
+}
+.palette-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 14px;
+  border-top: 1px solid #263323;
+  color: #6f8466;
+  font-size: 10.5px;
+}
+.palette-footer kbd {
+  margin-right: 3px;
+}
+@media (max-width: 767px) {
+  .command-palette {
+    top: 10vh !important;
+  }
+  .palette-footer > span:last-child {
+    display: none;
+  }
+}
+
+/* ---------- Project result badges ---------- */
+.project-metrics li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 1px solid #34432d;
+  border-radius: 3px;
+  background: #121a1199;
+  color: #cfe3c3;
+  font: 11.5px var(--font-geist-mono), monospace;
+}
+.project-metrics li::before {
+  content: "▸";
+  color: #b6dca1;
+}
+.project-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Interactive circuit grid (whole-site background) ---------- */
+/* Static dot grid behind everything; node centers match the canvas spacing (26px). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 13px 13px, #22311f 1.1px, transparent 1.4px);
+  background-size: 26px 26px;
+}
+/* Interactive layer stays behind all content, so it only lights empty background. */
+.circuit-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* ---------- Text lens (letters near the cursor grow and lift) ---------- */
+lens-word {
+  display: inline;
+  white-space: nowrap;
+}
+lens-char {
+  display: inline-block;
+  transform-origin: 50% 75%;
+  transition: transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Inline-block letters keep the text's own whitespace handling inside words. */
+  white-space: pre;
+}
+@media (prefers-reduced-motion: reduce) {
+  lens-char {
+    transition: none;
+    transform: none !important;
+  }
+}

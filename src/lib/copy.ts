@@ -108,6 +108,27 @@ export const copy = {
     pauseAll: "Pause all animation",
     resumeAll: "Resume all animation",
   },
+  status: {
+    branch: "main",
+    root: "~/arman",
+    label: "Reading position",
+    palette: "Open command palette",
+    shortcut: "Ctrl K",
+    openToWork: "open to work",
+  },
+  palette: {
+    title: "Command palette",
+    description: "Jump to a section or project, or open a link. Use the arrow keys and Enter.",
+    placeholder: "Type a command or search…",
+    empty: "No matching commands.",
+    groups: { navigate: "Go to section", projects: "Projects", actions: "Actions" },
+    copyEmail: "Copy email address",
+    copied: "Email copied to clipboard",
+    resume: "Open resume",
+    github: "Open GitHub",
+    linkedin: "Open LinkedIn",
+    top: "Back to top",
+  },
 } as const;
 
 export const sceneStages = [
