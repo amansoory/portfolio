@@ -134,7 +134,7 @@ export const projects: Project[] = [
     outcome: "Students can ask about required courses and minimum grades, then provide completed courses to see what remains. Answers link to the catalog pages used so students can check the requirements themselves. The app works from reported course history, not an official transcript or degree audit.",
     lessons: "Search relevance scores alone did not reliably separate valid degree questions from unrelated requests. I added a small Claude routing step to identify the student’s program and reject off-topic questions before retrieving material for the answer.",
     github: null,
-    live: "https://unc-degree-rag.vercel.app/",
+    live: "https://planuncdegree.site/",
     preview: {
       src: "/projects/degree-planner-preview.png",
       alt: "Degree Planner AI chatbot answering a question about the Psychology B.A. requirements with catalog citations.",
