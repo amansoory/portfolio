@@ -140,7 +140,7 @@ export const projects: Project[] = [
     lessons:
       "I initially considered filtering unrelated questions by search relevance score. Testing showed that unrelated and valid questions scored almost the same, so I added a lightweight Claude routing step. It identifies the student’s program for more targeted retrieval and stops off-topic requests before generating an answer.",
     github: "https://github.com/amansoory/unc-degree-rag",
-    live: "https://unc-degree-rag.vercel.app/",
+    live: "https://planuncdegree.site/",
     preview: {
       src: "/projects/degree-planner-homepage.png",
       alt: "Degree Planner AI homepage with its UNC catalog introduction, empty question field, and program exploration options.",
