@@ -16,6 +16,7 @@ import {
 import type { MotionValue } from "motion/react";
 
 type SceneProps = {
+  mobile?: boolean;
   progress: MotionValue<number>;
   running: boolean;
   onReady: () => void;
@@ -87,12 +88,10 @@ function Plate({
 function Packet({
   points,
   offset,
-  running,
   progress,
 }: {
   points: [number, number, number][];
   offset: number;
-  running: boolean;
   progress: MotionValue<number>;
 }) {
   const mesh = useRef<Mesh>(null);
@@ -101,7 +100,7 @@ function Packet({
     [points],
   );
   useFrame(() => {
-    if (!mesh.current || !running) return;
+    if (!mesh.current) return;
     const phase = MathUtils.clamp(progress.get() * 1.25 - offset * 0.2, 0, 1);
     const t = phase <= 0.6 ? phase / 0.6 : 1 - (phase - 0.6) / 0.4;
     mesh.current.visible = phase > 0.02 && phase < 0.98;
@@ -127,7 +126,7 @@ function Architecture({ progress, running, onReady, onLost }: SceneProps) {
   const middle = useRef<Group>(null);
   const keyLight = useRef<DirectionalLight>(null);
   const fillLight = useRef<DirectionalLight>(null);
-  const { gl, invalidate, camera } = useThree();
+  const { gl, invalidate } = useThree();
   useEffect(() => {
     if (!running) return;
     const unsubscribe = progress.on("change", () => invalidate());
@@ -138,14 +137,17 @@ function Architecture({ progress, running, onReady, onLost }: SceneProps) {
   useEffect(() => {
     callbacks.current = { onReady, onLost };
   });
+  const drawn = useRef(false);
   useEffect(() => {
-    callbacks.current.onReady();
     const canvas = gl.domElement;
     const lost = (event: Event) => {
       event.preventDefault();
       callbacks.current.onLost();
     };
-    const restored = () => callbacks.current.onReady();
+    const restored = () => {
+      drawn.current = false;
+      invalidate();
+    };
     canvas.addEventListener("webglcontextlost", lost);
     canvas.addEventListener("webglcontextrestored", restored);
     return () => {
@@ -153,7 +155,7 @@ function Architecture({ progress, running, onReady, onLost }: SceneProps) {
       canvas.removeEventListener("webglcontextrestored", restored);
       callbacks.current.onLost();
     };
-  }, [gl]);
+  }, [gl, invalidate]);
   const paths = useMemo(
     () =>
       positions.map(
@@ -167,22 +169,23 @@ function Architecture({ progress, running, onReady, onLost }: SceneProps) {
       ),
     [],
   );
-  useFrame(() => {
-    if (!running || !root.current || !top.current || !middle.current) return;
-    const p = progress.get();
-    const assembly = MathUtils.smoothstep(p, 0, 0.8);
+  useFrame(({ camera }) => {
+    if (!root.current || !top.current || !middle.current) return;
+    // Pose always follows the latest progress, so a resumed or freshly mounted scene never lags.
+    const assembly = MathUtils.smoothstep(progress.get(), 0, 1);
     root.current.rotation.y = -0.18 + assembly * 0.32;
     root.current.rotation.x = assembly * 0.025;
     top.current.position.y = 0.55 + assembly * 0.9;
     middle.current.position.y = assembly * 0.32;
-    camera.position.set(
-      7.2 - assembly * 0.7,
-      6.2 + assembly * 0.25,
-      8 - assembly * 0.4,
-    );
+    camera.position.set(7.2 - assembly * 0.7, 6.2 + assembly * 0.25, 8 - assembly * 0.4);
     camera.lookAt(0, assembly * 0.18, 0);
     if (keyLight.current) keyLight.current.intensity = 3 + assembly * 0.5;
     if (fillLight.current) fillLight.current.intensity = 2 - assembly * 0.4;
+    if (!drawn.current) {
+      drawn.current = true;
+      // Reveal after this frame reaches the screen, so the SVG crossfades into a drawn chip.
+      requestAnimationFrame(() => callbacks.current.onReady());
+    }
   });
   return (
     <>
@@ -289,7 +292,6 @@ function Architecture({ progress, running, onReady, onLost }: SceneProps) {
             <Packet
               points={points}
               offset={i / 6}
-              running={running}
               progress={progress}
             />
           </group>
@@ -326,8 +328,10 @@ export default function SystemScene(props: SceneProps) {
     >
       <Canvas
         camera={{ position: [7.2, 6.2, 8], fov: 36 }}
-        dpr={[1, 1.5]}
+        dpr={props.mobile ? 1 : [1, 1.5]}
         frameloop={props.running ? "demand" : "never"}
+        // Nothing here is pointer-interactive, so skip the per-scroll canvas re-measure (it forces a redraw).
+        resize={{ scroll: false }}
         gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(new Color("#0b100e"), 0);

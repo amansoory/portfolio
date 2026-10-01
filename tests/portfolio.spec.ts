@@ -8,7 +8,7 @@ test("desktop scene loads, pauses, and exposes working project navigation", asyn
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "From code",
+    "I have a few ideas.",
   );
   await expect(page.locator("canvas")).toBeVisible({ timeout: 20_000 });
   await expect(page.locator(".poster-hidden")).toHaveCount(1);
@@ -21,7 +21,8 @@ test("desktop scene loads, pauses, and exposes working project navigation", asyn
     page.getByRole("button", { name: "Pause motion" }),
   ).toBeVisible();
   await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
-  await page.getByRole("link", { name: "Read the build" }).first().click();
+  await expect(page.locator('.case-link[href="/projects/vibesafe"]')).toHaveText("What I built");
+  await page.locator('.case-link[href="/projects/vibesafe"]').click();
   await expect(page).toHaveURL(/\/projects\/vibesafe/);
   await expect(
     page.getByRole("heading", { name: "What it’s for" }),
@@ -85,10 +86,6 @@ test("reduced motion and unavailable WebGL retain the complete portfolio", async
     ),
   ).toBe("auto");
   await expect(page.locator(".scroll-journey")).toHaveAttribute(
-    "data-pin",
-    "false",
-  );
-  await expect(page.locator(".scroll-journey")).toHaveAttribute(
     "data-motion",
     "static",
   );
@@ -111,43 +108,34 @@ test("reduced motion and unavailable WebGL retain the complete portfolio", async
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
-test("scroll story reverses exactly, pins briefly, and releases before projects", async ({
+test("scroll story reverses exactly and the page never pins", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
-  await expect(page.locator(".scroll-journey")).toHaveAttribute(
-    "data-pin",
-    "true",
-  );
   await expect(page.locator(".poster-hidden")).toHaveCount(1);
-  await page.evaluate(() => scrollTo({ top: 350, behavior: "instant" }));
+  const heroTop = () =>
+    page.locator(".hero").evaluate((el) => el.getBoundingClientRect().top);
+  const start = await heroTop();
+  await page.evaluate(() => scrollTo({ top: 120, behavior: "instant" }));
   await expect(page.locator(".hero-experience")).toHaveAttribute(
     "data-stage",
     "1",
   );
+  // The hero moves with the page from the very first pixel.
+  expect(await heroTop()).toBeCloseTo(start - 120, 0);
   const first = await page
     .locator(".scroll-journey")
     .evaluate((el) =>
       (el as HTMLElement).style.getPropertyValue("--hero-progress"),
     );
-  expect(
-    await page
-      .locator(".hero")
-      .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
-  ).toBe(84);
-  await page.evaluate(() => scrollTo({ top: 650, behavior: "instant" }));
+  await page.evaluate(() => scrollTo({ top: 400, behavior: "instant" }));
   await expect(page.locator(".hero-experience")).toHaveAttribute(
     "data-stage",
     "2",
   );
-  await page.evaluate(() => scrollTo({ top: 850, behavior: "instant" }));
-  expect(
-    await page
-      .locator(".hero")
-      .evaluate((el) => el.getBoundingClientRect().top),
-  ).toBeLessThan(84);
-  await page.evaluate(() => scrollTo({ top: 350, behavior: "instant" }));
+  expect(await heroTop()).toBeCloseTo(start - 400, 0);
+  await page.evaluate(() => scrollTo({ top: 120, behavior: "instant" }));
   await expect(page.locator(".hero-experience")).toHaveAttribute(
     "data-stage",
     "1",
@@ -205,9 +193,9 @@ test("anchor destinations and keyboard focus bypass entrances", async ({
     "opacity",
     "1",
   );
-  await page.getByRole("link", { name: "Read the build" }).first().focus();
+  await page.locator('.case-link[href="/projects/vibesafe"]').focus();
   await expect(
-    page.getByRole("link", { name: "Read the build" }).first(),
+    page.locator('.case-link[href="/projects/vibesafe"]'),
   ).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/projects\/vibesafe/);
@@ -289,10 +277,6 @@ test("mobile signals progress without pinning and live reduced-motion changes ar
     "data-motion",
     "active",
   );
-  await expect(page.locator(".scroll-journey")).toHaveAttribute(
-    "data-pin",
-    "false",
-  );
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.evaluate(() => scrollTo({ top: 250, behavior: "instant" }));
   await expect
@@ -312,16 +296,8 @@ test("mobile signals progress without pinning and live reduced-motion changes ar
     0,
   );
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await expect(page.locator(".scroll-journey")).toHaveAttribute(
-    "data-pin",
-    "false",
-  );
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await expect(page.locator(".scroll-journey")).toHaveAttribute(
-    "data-pin",
-    "true",
-  );
   await expect(page.locator("canvas")).toHaveCount(1);
 });
 
@@ -343,7 +319,7 @@ test("case studies, missing routes, metadata, and honest empty links", async ({
     );
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
       "content",
-      /VibeSafe|Industry Resilience Predictor|Arcade-Style Space Battle|Dungeon Hero/,
+      /VibeSafe|Industry Resilience Predictor|Arcade-Style Space Battle|Dungeon Crawler/,
     );
     await expect(
       page.getByRole("heading", { name: "What it does" }),
@@ -365,6 +341,7 @@ test("case studies, missing routes, metadata, and honest empty links", async ({
 
 test("core content and navigation work without JavaScript", async ({
   browser,
+  baseURL,
 }) => {
   const context = await browser.newContext({
     javaScriptEnabled: false,
@@ -372,12 +349,12 @@ test("core content and navigation work without JavaScript", async ({
     viewport: { width: 390, height: 844 },
   });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:3100/");
+  await page.goto(baseURL!);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator(".system-poster")).toBeVisible();
   await page.getByRole("link", { name: "See my work" }).click();
   await expect(page).toHaveURL(/#work/);
-  await page.getByRole("link", { name: "Read the build" }).first().click();
+  await page.locator('.case-link[href="/projects/vibesafe"]').click();
   await expect(
     page.getByRole("heading", { name: "How I built it" }),
   ).toBeVisible();

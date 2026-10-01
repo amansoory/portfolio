@@ -3,7 +3,7 @@
 import { copy } from "@/lib/copy";
 
 import Link from "next/link";
-import { ArrowUpRight, ContactRound, FileDown, GitFork, Menu, Terminal } from "lucide-react";
+import { ArrowUpRight, ContactRound, FileDown, GitFork, Menu } from "lucide-react";
 import { useState } from "react";
 import {
   Sheet,
@@ -28,11 +28,21 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <Link href="/" className="wordmark" aria-label={copy.nav.home}>
-          <Terminal size={20} strokeWidth={1.6} />
+        <Link
+          href="/"
+          className="wordmark"
+          aria-label={copy.nav.home}
+          onClick={(event) => {
+            if (window.location.pathname !== "/" || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            if (window.location.hash) {
+              window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+            }
+            window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+          }}
+        >
           <span>
-            {profile.initials}
-            <span className="accent">.</span>DEV
+            <span className="accent">{"<"}</span>Arman<span className="accent">{"/>"}</span>
           </span>
         </Link>
         <nav className="desktop-nav" aria-label="Main navigation">
@@ -76,7 +86,7 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent className="mobile-sheet">
             <SheetTitle className="font-mono">
-              {profile.initials}.DEV / {copy.nav.title}
+              {"<Arman/>"} / {copy.nav.title}
             </SheetTitle>
             <SheetDescription>{copy.nav.description}</SheetDescription>
             <nav aria-label="Mobile navigation" className="mobile-links">
@@ -92,6 +102,11 @@ export function SiteHeader() {
                 </SheetClose>
               ))}
             </nav>
+            {profile.resume && (
+              <ResourceLink href={profile.resume}>
+                <FileDown size={16} /> {copy.links.resume}
+              </ResourceLink>
+            )}
           </SheetContent>
         </Sheet>
       </div>

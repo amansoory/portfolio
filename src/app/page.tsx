@@ -7,7 +7,6 @@ import {
   Code2,
   Cpu,
   Database,
-  GitBranch,
   MapPin,
 } from "lucide-react";
 import { HeroExperience } from "@/components/hero-experience";
@@ -42,20 +41,24 @@ export default function Home() {
               <p className="hero-name">
                 {copy.hero.greeting} {profile.name}.
               </p>
+              <p className="hero-education">{copy.hero.education}</p>
               <h1 id="hero-title">
                 {copy.hero.title[0]}
                 <br />
-                {copy.hero.title[1]}
-                <br />
-                <span>
-                  {copy.hero.title[2]}
-                  <br className="mobile-break" /> {copy.hero.title[3]}
-                </span>
+                <span>{copy.hero.title[1]}</span>
               </h1>
               <p className="hero-description">
-                {profile.heroLines[0]}
-                <br className="desktop-break" /> {profile.heroLines[1]}
+                {copy.hero.subtitle}
               </p>
+              <ul className="hero-work-preview" aria-label="Experience at a glance">
+                {experience.map((item) => (
+                  <li key={item.id}>
+                    <Link href={`#experience-${item.id}`}>
+                      {item.role} <span>@ <span className="company-glow">{item.shortCompany}</span></span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
               <div className="hero-actions">
                 <Link href="#work" className="primary-link">
                   {copy.hero.work} <ArrowDown size={17} />
@@ -74,11 +77,7 @@ export default function Home() {
               <span className="hero-coordinates">{copy.hero.path}</span>
             </div>
           </section>
-          <nav className="career-overview section-shell" aria-label="Experience at a glance">
-            <a href="#experience"><span>Machine Learning Intern</span><strong>Timing</strong><p>LLM agents, retrieval, PostgreSQL and Redis</p></a>
-            <a href="#experience"><span>Software Engineering Intern</span><strong>Vogro</strong><p>Python automation, APIs and React</p></a>
-            <a href="#experience"><span>Teaching Assistant</span><strong>200+ students</strong><p>Python labs, debugging and office hours</p></a>
-          </nav>
+
         </div>
         <section
           className="work-section section-shell"
@@ -111,6 +110,12 @@ export default function Home() {
                 >
                   <Link
                     href={`/projects/${project.slug}`}
+                    className="project-card-link"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  />
+                  <Link
+                    href={`/projects/${project.slug}`}
                     className="project-preview-link"
                     data-enter="visual"
                     aria-label={`${copy.work.open} ${project.name}`}
@@ -124,6 +129,7 @@ export default function Home() {
                     <div className="project-category" data-enter>
                       <span>/{project.number}</span>
                       {project.category}
+                      {project.year && <time className="project-year" dateTime={project.year}>{project.year}</time>}
                     </div>
                     <h3 data-enter>
                       <Link href={`/projects/${project.slug}`}>
@@ -174,59 +180,14 @@ export default function Home() {
         >
           <Reveal>
             <SectionLabel number="02">{copy.experience.label}</SectionLabel>
-            <div className="split-section">
-              <div>
-                <h2 id="experience-title">
-                  {copy.experience.title[0]}
-                  <br />
-                  <span>{copy.experience.title[1]}</span>
-                </h2>
-                <p className="section-description">
-                  {copy.experience.intro[0]}
-                  <br />
-                  {copy.experience.intro[1]}
-                </p>
-                <div className="small-terminal">
-                  <span>
-                    <GitBranch size={14} /> career / main
-                  </span>
-                  <code>$ git log --oneline</code>
-                  <span className="muted">{portfolioCopy.experienceNote}</span>
-                </div>
-                <ExperienceSection />
-              </div>
-              <ol className="timeline" data-flow>
-                {experience.map((item, i) => (
-                  <li key={i} data-enter data-flow data-experience-index={i}>
-                    <span
-                      className={`timeline-dot ${item.current ? "current" : ""}`}
-                    />
-                    <div className="timeline-period">
-                      {item.period}
-                      {item.current && (
-                        <span className="timeline-current">
-                          {copy.experience.latest}
-                        </span>
-                      )}
-                    </div>
-                    <h3>{item.company}</h3>
-                    <p className="timeline-company">{item.role}</p>
-                    <p>{item.detail}</p>
-                    {item.signals && (
-                      <div
-                        className="experience-signals"
-                        aria-label={item.signals.join(" to ")}
-                      >
-                        {item.signals.map((signal) => (
-                          <span key={signal}>{signal}</span>
-                        ))}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ol>
+            <div className="section-heading">
+              <h2 id="experience-title">
+                {copy.experience.title[0]} <span>{copy.experience.title[1]}</span>
+              </h2>
+              <p>{copy.experience.intro.join(" ")}</p>
             </div>
           </Reveal>
+          <ExperienceSection />
         </section>
         <section
           className="skills-section section-shell"
@@ -259,8 +220,15 @@ export default function Home() {
                     </div>
                     <h3>{group.name}</h3>
                     <ul>
-                      {group.items.map((item, index) => (
-                        <li key={index}>{item}</li>
+                      {group.items.map((item) => (
+                        <li key={item}>
+                          {item.split(" / ").map((tool, index) => (
+                            <span key={tool}>
+                              {index > 0 && " / "}
+                              <span className={group.emphasis.includes(tool) ? "skill-emphasis" : undefined}>{tool}</span>
+                            </span>
+                          ))}
+                        </li>
                       ))}
                     </ul>
                   </div>

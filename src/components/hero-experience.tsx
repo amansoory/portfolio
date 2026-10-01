@@ -7,6 +7,7 @@ import {
   Component,
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
   type ReactNode,
@@ -15,9 +16,8 @@ import { useMotionValueEvent } from "motion/react";
 import { Terminal } from "lucide-react";
 import { useJourney } from "@/components/scroll-journey";
 
-const SystemScene = dynamic(() => import("@/components/system-scene"), {
-  ssr: false,
-});
+const loadScene = () => import("@/components/system-scene");
+const SystemScene = dynamic(loadScene, { ssr: false });
 
 class SceneBoundary extends Component<
   { children: ReactNode },
@@ -33,6 +33,7 @@ class SceneBoundary extends Component<
 }
 
 function SystemPoster() {
+  const id = useId();
   return (
     <svg
       className="system-poster"
@@ -42,7 +43,7 @@ function SystemPoster() {
     >
       <defs>
         <linearGradient
-          id="plate"
+          id={`${id}-plate`}
           x1="160"
           y1="100"
           x2="480"
@@ -53,7 +54,7 @@ function SystemPoster() {
           <stop offset="1" stopColor="#0d1915" />
         </linearGradient>
         <linearGradient
-          id="chip"
+          id={`${id}-chip`}
           x1="260"
           y1="170"
           x2="370"
@@ -88,7 +89,7 @@ function SystemPoster() {
       />
       <path
         d="M168 284 320 198 472 284 320 371Z"
-        fill="url(#plate)"
+        fill={`url(#${id}-plate)`}
         stroke="#6d9976"
       />
       <g className="poster-upper">
@@ -99,7 +100,7 @@ function SystemPoster() {
         />
         <path
           d="M168 211 320 125 472 211 320 298Z"
-          fill="url(#plate)"
+          fill={`url(#${id}-plate)`}
           stroke="#b0d9b4"
         />
         <path
@@ -112,7 +113,7 @@ function SystemPoster() {
           fill="#47724e"
           stroke="#b9eec0"
         />
-        <path d="M272 203 320 176 368 203 320 231Z" fill="url(#chip)" />
+        <path d="M272 203 320 176 368 203 320 231Z" fill={`url(#${id}-chip)`} />
         <path
           d="m305 202-8 5 8 5m30-10 8 5-8 5m-11-15-8 19"
           stroke="#14291b"
@@ -169,32 +170,32 @@ export function HeroExperience() {
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const desktopQuery = window.matchMedia("(min-width: 768px)");
     const connection = (
       navigator as Navigator & { connection?: { saveData?: boolean } }
     ).connection;
     const update = () => {
       setEligible(
-        desktopQuery.matches && !motionQuery.matches && !connection?.saveData,
+        !motionQuery.matches && !connection?.saveData,
       );
     };
     const frame = requestAnimationFrame(update);
+    // Fetch the 3D bundle while idle so it is ready before the chip scrolls into view.
+    const idle = window.setTimeout(() => void loadScene(), 1200);
     motionQuery.addEventListener("change", update);
-    desktopQuery.addEventListener("change", update);
     const observer = new IntersectionObserver(
       ([entry]) => {
         setVisible(entry.isIntersecting);
         if (entry.isIntersecting) setLoaded(true);
       },
-      { threshold: 0 },
+      { threshold: 0, rootMargin: "160px 0px" },
     );
     const visibility = () => setTabVisible(!document.hidden);
     document.addEventListener("visibilitychange", visibility);
     if (host.current) observer.observe(host.current);
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(idle);
       motionQuery.removeEventListener("change", update);
-      desktopQuery.removeEventListener("change", update);
       observer.disconnect();
       document.removeEventListener("visibilitychange", visibility);
     };
@@ -211,7 +212,12 @@ export function HeroExperience() {
         <span className="crosshair">+</span> {copy.scene.caption}
         <span className="scene-caption-index">SYS.001</span>
       </div>
-      <div className="scene-stage" role="img" aria-label={copy.scene.alt}>
+      <div
+        className="scene-stage"
+        role="img"
+        aria-label={copy.scene.alt}
+        data-ready={ready && eligible}
+      >
         <div className="scene-halo" />
         <div
           className={`poster-layer ${ready && eligible ? "poster-hidden" : ""}`}
@@ -221,6 +227,7 @@ export function HeroExperience() {
         {eligible && loaded && (
           <SceneBoundary>
             <SystemScene
+              mobile={journey.mobile}
               progress={journey.heroProgress}
               running={visible && journey.enabled && tabVisible}
               onReady={onReady}
@@ -250,11 +257,13 @@ export function HeroExperience() {
           </span>
         </div>
         <div className="hero-terminal-body">
-          <code>
+          <code key={`c${journey.reduced ? 0 : stage}`}>
             {stages[journey.reduced ? 0 : stage].command}
             <span className="terminal-cursor">▌</span>
           </code>
-          <span>{stages[journey.reduced ? 0 : stage].output}</span>
+          <span key={`o${journey.reduced ? 0 : stage}`}>
+            {stages[journey.reduced ? 0 : stage].output}
+          </span>
         </div>
       </div>
     </div>

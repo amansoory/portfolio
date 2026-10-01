@@ -2,7 +2,9 @@
 export const copy = {
   hero: {
     greeting: "Hi, I’m",
-    title: ["From code", "to systems.", "AI agents", "and interactive tools."],
+    title: ["I have a few ideas.", "Fortunately, I know how to code."],
+    subtitle: "Full stack development \u00b7 LLM integration \u00b7 Backend APIs \u00b7 Databases \u00b7 Cloud deployment",
+    education: "Comp Sci + Data Sci \u00b7 UNC \u201927",
     edition: "PORTFOLIO / 2026",
     work: "See my work",
     about: "About me",

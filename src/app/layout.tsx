@@ -50,7 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${displayFont.variable} dark antialiased`}
     >
       <body id="top">
-        <a className="skip-link" href="#main-content">
+        <a className="skip-link" href="#main-content" tabIndex={0}>
           {copy.nav.skip}
         </a>
         <SiteHeader />

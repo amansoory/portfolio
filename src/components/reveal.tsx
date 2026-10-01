@@ -26,7 +26,7 @@ export function Reveal({
         "[data-enter], .section-heading > *, .split-section > div > h2, .section-description, .small-terminal",
       ),
     );
-    if (!targets.length) targets.push(root);
+    if (!targets.length) return;
     const animations = new Map<HTMLElement, ReturnType<typeof animate>>();
     const finish = (element: HTMLElement) => {
       animations.get(element)?.stop();
@@ -74,34 +74,36 @@ export function Reveal({
           entered.current.add(element);
           element.dataset.entered = "true";
           observer.unobserve(element);
-          const visual = element.dataset.enter === "visual" && !mobile;
+          const artwork = element.dataset.enter === "visual";
+          const visual = artwork && !mobile;
           animations.set(
             element,
             animate(
               element,
               {
-                opacity: [0.45, 1],
+                // Text stays legible throughout; artwork carries the deeper reveal.
+                opacity: [artwork ? 0.55 : 0.88, 1],
                 transform: [
-                  `translateY(${mobile ? 10 : 18}px)`,
+                  `translateY(${artwork ? (mobile ? 10 : 18) : (mobile ? 6 : 10)}px)`,
                   "translateY(0px)",
                 ],
                 ...(visual
                   ? {
-                      filter: ["blur(3px)", "blur(0px)"],
-                      clipPath: ["inset(0 0 7% 0)", "inset(0 0 0% 0)"],
+                      filter: ["blur(2px)", "blur(0px)"],
+                      clipPath: ["inset(0 0 4% 0)", "inset(0 0 0% 0)"],
                     }
                   : {}),
               },
               {
-                duration: mobile ? 0.35 : 0.55,
-                delay: Math.min(order++ * 0.07, 0.28),
+                duration: artwork ? (mobile ? 0.4 : 0.6) : 0.42,
+                delay: Math.min(order++ * 0.045, 0.18),
                 ease: [0.22, 1, 0.36, 1],
               },
             ),
           );
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -24px 0px" },
+      { threshold: 0.08, rootMargin: "0px 0px 24px 0px" },
     );
     targets.forEach((element) => {
       if (!entered.current.has(element)) observer.observe(element);

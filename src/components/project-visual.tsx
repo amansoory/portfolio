@@ -5,6 +5,29 @@ import { portfolioCopy, visualData, type Project } from "@/lib/portfolio";
 
 export function ProjectVisual({ project }: { project: Project }) {
   if (project.preview) {
+    const { crop } = project.preview;
+    if (crop) {
+      return (
+        <div
+          className={`project-visual project-screenshot project-game-preview theme-${project.accent}`}
+          style={{ aspectRatio: `${crop.width} / ${crop.height}` }}
+        >
+          <Image
+            src={project.preview.src}
+            alt={project.preview.alt}
+            width={crop.sourceWidth}
+            height={crop.sourceHeight}
+            sizes="(max-width: 767px) 100vw, (max-width: 1150px) 65vw, 1440px"
+            className="project-game-image"
+            style={{
+              width: `${(crop.sourceWidth / crop.width) * 100}%`,
+              left: `${(-crop.x / crop.width) * 100}%`,
+              top: `${(-crop.y / crop.height) * 100}%`,
+            }}
+          />
+        </div>
+      );
+    }
     return (
       <div
         className={`project-visual project-screenshot theme-${project.accent}`}
@@ -22,7 +45,7 @@ export function ProjectVisual({ project }: { project: Project }) {
   const labels = project.visualLabels;
   return (
     <div
-      className={`project-visual visual-${project.visual} theme-${project.accent}`}
+      className={`project-visual illustration-${project.visual} theme-${project.accent}`}
       role="img"
       aria-label={`${project.name}: ${project.category}. ${copy.preview.note}`}
     >

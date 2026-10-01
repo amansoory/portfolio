@@ -94,14 +94,12 @@ export default async function ProjectPage({ params }: Props) {
               </div>
             )}
             <div className="case-resources">
+              <ResourceLink href={project.live} className="live-demo-link">
+                Live Demo
+              </ResourceLink>
               <ResourceLink href={project.github}>
                 <GitFork size={15} />
                 {copy.links.source}
-              </ResourceLink>
-              <ResourceLink href={project.live}>
-                {project.slug === "vibesafe" || project.featured
-                  ? copy.work.demo
-                  : copy.links.live}
               </ResourceLink>
             </div>
           </div>

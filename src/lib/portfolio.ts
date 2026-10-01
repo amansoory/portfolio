@@ -33,7 +33,7 @@ export const profile: Profile = {
   email: "armanmansoorhassan@gmail.com",
   github: "https://github.com/amansoory",
   linkedin: "https://linkedin.com/in/arman-hassan1",
-  resume: null,
+  resume: "/Arman_Hassan_Resume.pdf",
   // Enable indexing after the final deployment URL and resume file are supplied.
   draft: true,
 };
@@ -64,7 +64,12 @@ export type Project = {
   demoPreview?: string;
   featured?: boolean;
   placeholder: boolean;
-  preview?: { src: string; alt: string };
+  preview?: {
+    src: string;
+    alt: string;
+    // Source-pixel crops preserve the original screenshot and its aspect ratio.
+    crop?: { x: number; y: number; width: number; height: number; sourceWidth: number; sourceHeight: number };
+  };
 };
 
 export const projects: Project[] = [
@@ -134,11 +139,11 @@ export const projects: Project[] = [
       "The app lists required courses, identifies minimum grades stated in the catalog, and asks what courses a student has completed to show what remains. Answers link back to the catalog pages used.",
     lessons:
       "I initially considered filtering unrelated questions by search relevance score. Testing showed that unrelated and valid questions scored almost the same, so I added a lightweight Claude routing step. It identifies the student’s program for more targeted retrieval and stops off-topic requests before generating an answer.",
-    github: null,
+    github: "https://github.com/amansoory/unc-degree-rag",
     live: "https://unc-degree-rag.vercel.app/",
     preview: {
-      src: "/projects/degree-planner-preview.png",
-      alt: "Degree Planner AI chatbot answering a question about the Psychology B.A. requirements with catalog citations.",
+      src: "/projects/degree-planner-homepage.png",
+      alt: "Degree Planner AI homepage with its UNC catalog introduction, empty question field, and program exploration options.",
     },
     featured: true,
     placeholder: false,
@@ -159,9 +164,9 @@ export const projects: Project[] = [
       "PR → FINDINGS",
     ],
     description:
-      "VibeSafe scans repositories for security problems, posts findings on pull requests, and fails CI when it finds critical vulnerabilities.",
+      "VibeSafe scans repositories for security problems, posts findings on pull requests, and fails CI when it finds critical vulnerabilities. Built in collaboration with Humza Hassan.",
     tags: ["Python", "Claude API", "FastAPI", "Docker", "GitHub Actions"],
-    year: null,
+    year: "2026",
     role: "Security scanner development",
     duration: null,
     problem:
@@ -192,7 +197,7 @@ export const projects: Project[] = [
     description:
       "An interactive dashboard and regression model that compare COVID-era drawdown and recovery across 90+ industries. Built during a hackathon.",
     tags: ["Python", "pandas", "scikit-learn", "Streamlit", "Docker"],
-    year: null,
+    year: "2025",
     role: "Data pipeline, model & dashboard",
     duration: "Hackathon project",
     problem:
@@ -227,7 +232,7 @@ export const projects: Project[] = [
     description:
       "A Pygame space battle with enemy spawning, collision detection, and increasing difficulty. Built in under 24 hours; first place at Hack110.",
     tags: ["Python", "Pygame", "OOP"],
-    year: null,
+    year: "2024",
     role: "Gameplay systems",
     duration: "Under 24 hours",
     problem:
@@ -239,13 +244,18 @@ export const projects: Project[] = [
     lessons:
       "The interesting part is how the systems interact: enemies spawn, collisions change the game state, and difficulty keeps the next round moving.",
     github: "https://github.com/amansoory/Space-Battles-Hackathon-Winner",
+    preview: {
+      src: "/projects/space-battle-preview.png",
+      alt: "Space Battle gameplay with two player ships, alien enemies, and health, lives, and ammunition indicators.",
+      crop: { x: 0, y: 0, width: 1280, height: 800, sourceWidth: 1920, sourceHeight: 1200 },
+    },
     live: null,
     placeholder: false,
   },
   {
     slug: "dungeon-hero",
     number: "05",
-    name: "Dungeon Hero",
+    name: "Dungeon Crawler",
     category: "Game architecture / Java",
     label: "GRID / NEXT MOVE",
     accent: "sage",
@@ -259,18 +269,23 @@ export const projects: Project[] = [
     description:
       "A turn-based Java grid game with pathfinding, collision resolution, and rule-based enemies. Game logic stays separate from state and rendering.",
     tags: ["Java", "OOP", "MVC", "Observer Pattern"],
-    year: null,
+    year: "2025",
     role: "Game logic & architecture",
     duration: null,
     problem:
-      "Each turn needs to account for movement, collisions, and enemy rules. Dungeon Hero handles those decisions separately from drawing the board.",
+      "Each turn needs to account for movement, collisions, and enemy rules. Dungeon Crawler handles those decisions separately from drawing the board.",
     approach:
       "The game is organized across 10+ Java classes using MVC and the Observer pattern. The logic handles pathfinding, collision resolution, and enemy behavior; state and rendering have their own responsibilities.",
     outcome:
       "The result is a turn-based game with movement and enemy rules that don’t depend on the rendering code.",
     lessons:
-      "The architecture is the part to look at here: MVC separates the pieces, and the Observer pattern connects state changes to the view. The preview illustrates pathfinding rather than running the game.",
+      "The architecture is the part to look at here: MVC separates the pieces, and the Observer pattern connects state changes to the view.",
     github: "https://github.com/amansoory/Dungeon-Hero-LogicGrid",
+    preview: {
+      src: "/projects/dungeon-crawler-preview.png",
+      alt: "Arman's Dungeon Crawler menu with Last Score, Start Game, and Switch Mode controls.",
+      crop: { x: 0, y: 176, width: 895, height: 559.375, sourceWidth: 895, sourceHeight: 893 },
+    },
     live: null,
     placeholder: false,
   },
@@ -304,73 +319,85 @@ export const projects: Project[] = [
 ];
 
 type Experience = {
+  id: string;
   period: string;
   role: string;
   company: string;
-  detail: string;
-  takeaway: string;
-  built: string[];
+  shortCompany: string;
+  context?: string;
+  contributions: string[];
   tools: string[];
-  current: boolean;
-  signals?: string[];
 };
+// Based on public/resume.pdf, with the user's Timing contact-count and TA tools corrections.
+// Keep hero and section in sync.
 export const experience: Experience[] = [
   {
+    id: "timing",
     period: "January to May 2026",
-    role: "Machine Learning Intern",
+    role: "Software Engineering Intern",
     company: "Timing",
-    current: false,
-    detail:
-      "At Timing, I built an LLM agent that prioritized contacts for follow-up. I worked on RAG over interaction history with PostgreSQL and pgvector, and improved API performance with PostgreSQL indexing and Redis caching.",
-    takeaway: "I worked on retrieving the right context before an agent decided who needed a follow-up.",
-    built: ["Contact-prioritization LLM agent", "RAG over interaction history", "PostgreSQL indexing and Redis caching"],
-    tools: ["OpenAI API", "RAG", "PostgreSQL", "pgvector", "Redis"],
-    signals: ["GOALS", "HISTORY", "RANKED FOLLOW-UPS"],
+    shortCompany: "Timing",
+    contributions: [
+      "Built an LLM agent with the OpenAI API to rank LinkedIn contacts by priority, cutting manual input by 60%.",
+      "Built a RAG pipeline using pgvector across 1,000 contacts to generate personalized outreach drafts.",
+      "Cut API latency from approximately 450 ms to under 90 ms through PostgreSQL indexing and Redis caching.",
+    ],
+    tools: ["OpenAI API", "PostgreSQL", "pgvector", "Redis"],
   },
   {
+    id: "unc",
     period: "August to December 2025",
     role: "Teaching Assistant",
-    company: "Introduction to Programming",
-    current: false,
-    detail:
-      "I supported 200+ students through Python labs and office hours, helping them debug programs and understand programming concepts.",
-    takeaway: "I helped students work through problems until the code made sense to them.",
-    built: ["Python lab support", "Debugging help", "Office hours for 200+ students"],
-    tools: ["Python", "Debugging", "Explaining code"],
+    company: "UNC Chapel Hill",
+    shortCompany: "UNC",
+    context: "Introduction to Programming",
+    contributions: [
+      "Supported 200+ students in introductory Python through weekly office hours and labs. Helped students debug code and understand control flow, functions, object-oriented programming, and memory diagrams.",
+      "Graded assignments and worked with course staff on feedback to improve student performance.",
+    ],
+    tools: ["Python", "VS Code"],
   },
   {
+    id: "vogro",
     period: "June to August 2025",
     role: "Software Engineering Intern",
     company: "Vogro",
-    current: false,
-    detail:
-      "At Vogro, I built Python automation, connected services through FastAPI and Node.js APIs, and improved page performance for older users.",
-    takeaway: "I connected the services behind the site and made the experience faster for older users.",
-    built: ["Python automation", "FastAPI and Node.js service connections", "Page performance improvements"],
+    shortCompany: "Vogro",
+    context: "Stanford-affiliated",
+    contributions: [
+      "Built Python tools to automate repetitive data tasks, with logging and error handling that made issues easier to find and fix. Reduced manual processing time by 40%.",
+      "Connected the React website, backend services, and outside tools through FastAPI and Node.js APIs, helping ship 3+ releases used by 500+ people.",
+      "Reduced unnecessary API calls and cleaned up UI components to make pages load 20% faster for elderly users on older devices.",
+    ],
     tools: ["Python", "FastAPI", "Node.js", "React"],
   },
 ];
 
-export const skills: { id: string; name: string; items: string[] }[] = [
+// Grounded in Arman_Hassan_Resume.pdf and the project details above.
+export const skills: { id: string; name: string; items: string[]; emphasis: string[] }[] = [
   {
     id: "01",
     name: "Languages",
-    items: ["Python", "TypeScript / JavaScript", "Java / C"],
+    items: ["Python", "SQL", "TypeScript / JavaScript", "Java", "C++", "HTML / CSS"],
+    emphasis: ["SQL"],
   },
   {
     id: "02",
-    name: "Interfaces",
-    items: ["Next.js / React", "React Native / Expo", "Streamlit"],
+    name: "Frontend & Mobile",
+    items: ["Next.js / React", "Tailwind CSS", "React Native / Expo", "Playwright", "Streamlit", "Unity / Pygame"],
+    emphasis: ["Tailwind CSS", "Playwright"],
   },
   {
     id: "03",
-    name: "Systems",
-    items: ["FastAPI / Node.js", "PostgreSQL / Redis", "Docker / GitHub Actions"],
+    name: "Backend & Infrastructure",
+    items: ["FastAPI / Node.js", "PostgreSQL / Redis", "Vercel / Oracle Cloud", "AWS S3 / IAM", "Docker / GitHub Actions", "Git / GitHub"],
+    emphasis: ["Vercel", "Git"],
   },
   {
     id: "04",
     name: "AI & Data",
-    items: ["AWS Bedrock / Claude", "pgvector / RAG", "scikit-learn / pandas"],
+    items: ["OpenAI API / Claude", "AWS Bedrock / Titan embeddings", "pgvector / RAG", "Amazon S3 Vectors", "scikit-learn / pandas / NumPy"],
+    emphasis: ["OpenAI API"],
   },
 ];
 
@@ -380,6 +407,7 @@ export const coursework: string[] = [
   "Systems",
   "Computer Organization",
   "Linear Algebra",
+  "Probability and Statistical Inference",
   "Data Management",
   "Machine Learning",
   "Introduction to Artificial Intelligence",
@@ -391,7 +419,7 @@ export const coursework: string[] = [
 
 export const portfolioCopy = {
   workNote:
-    "Jev 2048, Degree Planner AI, VibeSafe, and Industry Resilience link to live sites. The other previews illustrate how the projects work.",
+    "Jev 2048, Degree Planner AI, VibeSafe, and Industry Resilience link to live sites. Space Battle and Dungeon Crawler show screenshots; the racing preview is illustrative.",
   experienceNote: "# agents, reliable systems, and teaching",
   skillsNote: "These are tools I’ve used in my projects and internships.",
   courseworkLabel: "Coursework at UNC Chapel Hill",
