@@ -73,23 +73,44 @@ export function TextLens() {
       const textNodes: Text[] = [];
       while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
       for (const original of textNodes) {
-        const replacements: Node[] = [];
+        // Keep each text run as one layout item. In flex/grid links, separate
+        // word elements would each receive the gap intended for the link icon.
+        const text = document.createElement("lens-text");
+        const source = document.createElement("lens-source");
+        source.className = "sr-only";
+        source.textContent = original.nodeValue;
+        const letters = document.createElement("lens-letters");
+        letters.setAttribute("aria-hidden", "true");
+        text.append(source, letters);
+        const replacements: Node[] = [text];
+        const range = document.createRange();
+        let offset = 0;
         for (const part of (original.nodeValue ?? "").split(/(\s+)/)) {
           if (!part) continue;
           if (/^\s+$/.test(part)) {
-            replacements.push(document.createTextNode(part));
+            letters.appendChild(document.createTextNode(part));
+            offset += part.length;
             continue;
           }
           // Words stay unbreakable so line wrapping matches the original text.
           // Custom elements, so site CSS that targets <span> (e.g. colored heading lines) never applies.
           const word = document.createElement("lens-word");
+          range.setStart(original, offset);
+          let width = 0;
           for (const letter of Array.from(part)) {
             const span = document.createElement("lens-char") as HTMLSpanElement;
             span.textContent = letter;
+            // Preserve the original font's kerning/spacing when letters become
+            // inline blocks, so hovering never widens the link or shifts its icon.
+            offset += letter.length;
+            range.setEnd(original, offset);
+            const nextWidth = range.getBoundingClientRect().width;
+            span.style.width = `${nextWidth - width}px`;
+            width = nextWidth;
             word.appendChild(span);
             chars.push({ span, x: 0, y: 0, active: false });
           }
-          replacements.push(word);
+          letters.appendChild(word);
         }
         const parent = original.parentNode;
         if (!parent) continue;

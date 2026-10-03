@@ -23,8 +23,8 @@ for (const width of [360, 390, 430, 768, 1024, 1440]) {
       await expect(page.locator(".scroll-journey")).toHaveAttribute("data-motion", "active");
     }
     await expect(page.locator(".hero-work-preview li")).toHaveCount(3);
-    await expect(page.locator(".project-year")).toHaveCount(7);
-    await expect(page.locator(".project-year")).toHaveText(["2026", "2026", "2026", "2025", "2024", "2025", "2024"]);
+    await expect(page.locator(".project-year")).toHaveCount(5);
+    await expect(page.locator(".project-year")).toHaveText(["2026", "2026", "2026", "2025", "2024"]);
     const educationSize = await page.locator(".hero-education").evaluate(el => parseFloat(getComputedStyle(el).fontSize));
     expect(educationSize).toBeGreaterThanOrEqual(15);
     if (width >= 1024) {
@@ -69,9 +69,12 @@ for (const width of [360, 390, 430, 768, 1024, 1440]) {
         })).toBe(true);
       }
     }
+    await page.getByRole("link", { name: "Other Projects", exact: true }).click();
+    await expect(page.locator(".project-row")).toHaveCount(2);
     const dungeon = page.locator(".project-row").filter({ has: page.getByRole("heading", { name: "Dungeon Crawler", exact: true }) });
     await dungeon.scrollIntoViewIfNeeded();
     await dungeon.screenshot({ path: testInfo.outputPath("dungeon.png") });
+    await page.goto("/");
 
     await expect(page.locator(".experience-entry")).toHaveCount(3);
     await expect(page.locator(".experience-panel, .timeline")).toHaveCount(0);

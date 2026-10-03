@@ -86,7 +86,7 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent className="mobile-sheet">
             <SheetTitle className="font-mono">
-              {"<Arman/>"} / {copy.nav.title}
+              Arman · Navigation
             </SheetTitle>
             <SheetDescription>{copy.nav.description}</SheetDescription>
             <nav aria-label="Mobile navigation" className="mobile-links">

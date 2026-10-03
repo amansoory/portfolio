@@ -16,7 +16,7 @@ import { Command, GitBranch, Pause, Play } from "lucide-react";
 /** Section ids rendered as source files in the status bar. Projects use their own data-file. */
 const sectionFiles: Record<string, string> = {
   top: "hero.tsx",
-  work: "work/index.tsx",
+  work: "projects/index.tsx",
   experience: "experience.ts",
   skills: "toolkit.ts",
   about: "about.md",
@@ -38,7 +38,7 @@ export const useJourney = () => useContext(JourneyContext);
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
 const sectionLinks = [
   ["top", "Introduction"],
-  ["work", "Work"],
+  ["work", "Projects"],
   ["experience", "Experience"],
   ["skills", "Skills"],
   ["about", "About"],

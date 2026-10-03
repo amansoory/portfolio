@@ -31,6 +31,7 @@ for (const width of [360, 430, 1440]) {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     for (const label of await page.locator(selectors).all()) await expect(label).toHaveCSS('animation-name', 'none');
     expect(await typography()).toEqual(before);
+    await page.goto('/projects/other');
     const card = page.locator('.project-row').last();
     await card.evaluate(el => {
       el.scrollIntoView({ block: 'start', behavior: 'instant' });
@@ -39,7 +40,7 @@ for (const width of [360, 430, 1440]) {
     const box = await card.boundingBox();
     await page.mouse.click(box!.x + 8, box!.y + 8);
     await expect(page).toHaveURL(/projects\/initial-d-racing-game$/);
-    await page.goto('/projects/degree-planner-ai');
+    await page.goto('/projects/coursecompass-ai');
     await expect(page.locator('.live-demo-link')).toHaveCSS('color', 'rgb(16, 23, 13)');
     await expect(page.locator('.live-demo-link')).toHaveCSS('animation-name', 'none');
     await page.emulateMedia({ reducedMotion: 'no-preference' });

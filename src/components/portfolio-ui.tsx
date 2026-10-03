@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { profile } from "@/lib/portfolio";
 import { Reveal } from "@/components/reveal";
+import { ContactTypewriter } from "@/components/contact-typewriter";
 
 export function SectionLabel({
   number,
@@ -69,13 +70,10 @@ export function Contact() {
             <p className="eyebrow" data-enter>
               {copy.contact.eyebrow}
             </p>
-            <h2 id="contact-title" data-enter>
+            <h2 id="contact-title" data-enter aria-label="Want to build something?" data-lens="off">
               {copy.contact.title[0]}
               <br />
-              {copy.contact.title[1]} <span>{copy.contact.title[2]}</span>
-              <span className="terminal-cursor" aria-hidden="true">
-                _
-              </span>
+              <ContactTypewriter />
             </h2>
           </div>
           <div className="contact-side" data-enter>

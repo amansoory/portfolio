@@ -176,9 +176,9 @@ export function ProjectVisual({ project }: { project: Project }) {
         </>
       )}
       {project.visual === "planner" && (
-        <div className="planner-chat-preview" aria-label="Illustrative Degree Planner AI chatbot preview">
+        <div className="planner-chat-preview" aria-label="Illustrative CourseCompass AI chatbot preview">
           <div className="planner-chat-topline">
-            <span><span className="tiny-dot" /> DEGREE PLANNER AI</span>
+            <span><span className="tiny-dot" /> COURSECOMPASS AI</span>
             <span>ILLUSTRATIVE PREVIEW</span>
           </div>
           <div className="planner-question">

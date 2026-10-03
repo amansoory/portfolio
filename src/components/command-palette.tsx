@@ -19,7 +19,7 @@ type Command = {
 
 const sections = [
   ["top", "Introduction", "hero.tsx"],
-  ["work", "Work", "work/index.tsx"],
+  ["work", "Projects", "projects/index.tsx"],
   ["experience", "Experience", "experience.ts"],
   ["skills", "Skills", "toolkit.ts"],
   ["about", "About", "about.md"],

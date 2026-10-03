@@ -1,6 +1,7 @@
 import { copy } from "@/lib/copy";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Exo_2, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/portfolio-ui";
@@ -9,16 +10,30 @@ import { CircuitField } from "@/components/circuit-field";
 import { TextLens } from "@/components/text-lens";
 import { profile, siteDescription, siteUrl } from "@/lib/portfolio";
 
-const displayFont = Space_Grotesk({ variable: "--font-display", subsets: ["latin"], display: "swap" });
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const displayFont = localFont({
+  src: "./fonts/Pulsar-Original.otf",
+  variable: "--font-pulsar",
+  weight: "400",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const bodyFont = Exo_2({
+  variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const heroFont = IBM_Plex_Sans({
+  variable: "--font-hero",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const monoFont = IBM_Plex_Mono({
+  variable: "--font-code",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -50,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${displayFont.variable} dark antialiased`}
+      className={`${bodyFont.variable} ${monoFont.variable} ${displayFont.variable} ${heroFont.variable} dark antialiased`}
     >
       <body id="top">
         <CircuitField />

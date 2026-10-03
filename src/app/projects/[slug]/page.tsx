@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, GitFork } from "lucide-react";
-import { projects, profile, portfolioCopy, siteUrl } from "@/lib/portfolio";
+import { projects, mainProjects, otherProjects, profile, portfolioCopy, siteUrl } from "@/lib/portfolio";
 import { ProjectDemo } from "@/components/project-demo";
 import { ProjectVisual } from "@/components/project-visual";
 import { Contact, ResourceLink, SectionLabel } from "@/components/portfolio-ui";
@@ -52,13 +52,14 @@ export default async function ProjectPage({ params }: Props) {
   const index = projects.findIndex((item) => item.slug === slug);
   if (index < 0) notFound();
   const project = projects[index];
-  const next = projects[(index + 1) % projects.length];
+  const collection = otherProjects.includes(project) ? otherProjects : mainProjects;
+  const next = collection[(collection.indexOf(project) + 1) % collection.length];
   return (
     <main id="main-content" className={`case-study theme-${project.accent}`}>
       <div className="section-shell">
-        <Link href="/#work" className="back-link">
+        <Link href={otherProjects.includes(project) ? "/projects/other" : "/#work"} className="back-link">
           <ArrowLeft size={15} />
-          {copy.links.back}
+          {otherProjects.includes(project) ? "Back to Other Projects" : copy.links.back}
         </Link>
         <header className="case-header">
           <SectionLabel number={project.number}>

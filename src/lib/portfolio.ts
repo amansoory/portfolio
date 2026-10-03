@@ -27,9 +27,9 @@ export const profile: Profile = {
     "Working on AI agents, backend systems, and interactive software.",
   ],
   introduction:
-    "I’m studying computer science at UNC Chapel Hill, with a minor in Data Science. I expect to finish my BS in May 2027.",
+    "I’m a CS student at UNC Chapel Hill with a minor in Data Science, graduating in May 2027. Lately, a lot of what I work on comes back to AI. I like trying open source models and tools I find through Reddit or X, running them locally, and experimenting with them or turning them into small projects when something catches my attention. I like making things that either make my own life easier or just genuinely interest me, and lately I’ve been curious about distilling models and seeing how capable I can make smaller models run locally.",
   about:
-    "My interests span AI agents, backend systems, databases, security, and interactive software. I’ve also helped 200+ students learn Python, explaining everything from control flow to memory diagrams in labs and office hours.",
+    "But right now, I'm more focused on learning Go and Elixir because I want to better understand concurrency and fault tolerance, and how those are used to build a backend infrastructure that scales properly.",
   email: "armanmansoorhassan@gmail.com",
   github: "https://github.com/amansoory",
   linkedin: "https://linkedin.com/in/arman-hassan1",
@@ -121,9 +121,9 @@ export const projects: Project[] = [
   },
 
   {
-    slug: "degree-planner-ai",
+    slug: "coursecompass-ai",
     number: "02",
-    name: "Degree Planner AI",
+    name: "CourseCompass AI",
     category: "RAG chatbot / UNC degree planning",
     label: "RETRIEVE → CITE → EXPLAIN",
     accent: "mint",
@@ -137,7 +137,7 @@ export const projects: Project[] = [
     role: "Retrieval pipeline, guardrails, evals, UI, and deployment",
     duration: null,
     problem:
-      "I built Degree Planner AI to help UNC students understand what they still need to graduate. They can ask about a major in plain language, or upload a photo of their schedule, and get an answer grounded in the official course catalog.",
+      "I built CourseCompass AI to help UNC students understand what they still need to graduate. They can ask about a major in plain language, or upload a photo of their schedule, and get an answer grounded in the official course catalog.",
     approach:
       "A Python scraper turns catalog pages for 202 majors, minors, and tracks plus the IDEAs in Action general education pages into structured documents, indexed with Titan embeddings in Amazon S3 Vectors through a Bedrock Knowledge Base. Most questions are routed to the right program in code; only unclear ones use a Claude classifier call. The routed program’s requirements are always included, sources are numbered, and every citation is verified on the server before it reaches the student.",
     outcome:
@@ -151,8 +151,8 @@ export const projects: Project[] = [
     github: "https://github.com/amansoory/unc-degree-rag",
     live: "https://planuncdegree.site/",
     preview: {
-      src: "/projects/degree-planner-homepage.png",
-      alt: "Degree Planner AI homepage with its UNC catalog introduction, empty question field, and program exploration options.",
+      src: "/projects/coursecompass-homepage.png",
+      alt: "CourseCompass AI homepage with its UNC catalog introduction, empty question field, and program exploration options.",
     },
     featured: true,
     placeholder: false,
@@ -340,7 +340,12 @@ type Experience = {
   contributions: string[];
   tools: string[];
 };
-// Based on public/resume.pdf, with the user's Timing contact-count and TA tools corrections.
+export const otherProjects = projects.filter((project) =>
+  ["dungeon-hero", "initial-d-racing-game"].includes(project.slug),
+);
+export const mainProjects = projects.filter((project) => !otherProjects.includes(project));
+
+// Adapted from the latest resume; retain the user's TA tools correction.
 // Keep hero and section in sync.
 export const experience: Experience[] = [
   {
@@ -350,9 +355,9 @@ export const experience: Experience[] = [
     company: "Timing",
     shortCompany: "Timing",
     contributions: [
-      "Built a GPT-4o agent using function calling and structured outputs to rank contacts from LinkedIn interaction history ingested via OAuth, replacing manual contact triage with automated priority scoring.",
-      "Implemented a RAG pipeline using OpenAI embeddings and pgvector similarity search over 1,000+ contact records in PostgreSQL, retrieving relevant context to generate personalized outreach drafts.",
-      "Cut API latency by 80% (450 ms to under 90 ms) with composite PostgreSQL indexes and Redis caching.",
+      "Helped build Timing’s AI networking assistant at a small, early-stage startup, including a Chrome extension that put contact management and outreach directly into LinkedIn and Gmail.",
+      "Built a GPT-4o agent to prioritize follow-ups and draft outreach across 1,000+ contacts. It combined function calling and structured outputs with a RAG pipeline using OpenAI embeddings, pgvector, and PostgreSQL.",
+      "Made backend APIs 80% faster, bringing latency from 450 ms to under 90 ms through composite PostgreSQL indexes and Redis caching.",
     ],
     tools: ["OpenAI API", "PostgreSQL", "pgvector", "Redis"],
   },
@@ -362,10 +367,10 @@ export const experience: Experience[] = [
     role: "Teaching Assistant",
     company: "UNC Chapel Hill",
     shortCompany: "UNC",
-    context: "Introduction to Programming",
+    context: "COMP 110 · Introduction to Programming",
     contributions: [
-      "Supported 200+ students through weekly Python labs and office hours, diagnosing bugs and teaching control flow, functions, OOP, runtime analysis, and memory diagrams.",
-      "Reviewed and graded programming assignments, provided code-level feedback, and coordinated with course staff to address recurring student misconceptions.",
+      "Helped 200+ students build their Python skills in weekly labs and office hours, working through bugs and concepts including control flow, functions, OOP, runtime analysis, and memory diagrams.",
+      "Graded programming assignments and gave specific feedback on students’ code, working with the course staff to address concepts students repeatedly found difficult.",
     ],
     tools: ["Python", "VS Code"],
   },
@@ -377,9 +382,9 @@ export const experience: Experience[] = [
     shortCompany: "Vogro",
     context: "Stanford-affiliated",
     contributions: [
-      "Automated data transfer and cleanup across internal tools with Python scripts, deduplicating and validating records to reduce manual data-processing time by 40%.",
-      "Built REST API integrations with FastAPI and Node.js connecting a React frontend, backend services, and third-party tools across 3+ releases serving 500+ users.",
-      "Reduced page load time by 20% by eliminating redundant API requests and refactoring React components for improved performance on lower-end devices.",
+      "Wrote Python scripts to move, validate, and deduplicate data across internal tools, cutting time spent on manual data processing by 40%.",
+      "Connected the React frontend, backend services, and third-party tools through REST APIs built with FastAPI and Node.js, contributing to 3+ releases serving 500+ users.",
+      "Improved page load times by 20% by removing duplicate API requests and refactoring React components, making the app run more smoothly on lower-end devices.",
     ],
     tools: ["Python", "FastAPI", "Node.js", "React"],
   },
@@ -431,7 +436,7 @@ export const coursework: string[] = [
 
 export const portfolioCopy = {
   workNote:
-    "Jev 2048, Degree Planner AI, VibeSafe, and Industry Resilience link to live sites. Space Battle and Dungeon Crawler show screenshots; the racing preview is illustrative.",
+    "Live demos available.",
   experienceNote: "# agents, reliable systems, and teaching",
   skillsNote: "These are tools I’ve used in my projects and internships.",
   courseworkLabel: "Coursework at UNC Chapel Hill",

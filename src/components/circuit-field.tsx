@@ -9,7 +9,8 @@ import { useEffect, useRef } from "react";
  * - Previously: hover lights nearby nodes and routes traces along the cursor's row and column. It runs over empty
  *   background and the empty parts of cards (seen through their translucent surfaces), and fades out
  *   over text, links, and controls, where the text lens takes over.
- * - Clicking empty background sends a breadth-first-search wavefront (Manhattan rings).
+ * - Clicking or tapping background and regular text sends a wavefront (Manhattan rings).
+ *   Links, project cards, and controls never start a pulse.
  * Frames are drawn only while the pointer moves, a fade is in progress, or a pulse is running.
  * Disabled for reduced motion, and while the page's "Pause motion" toggle is active.
  */
@@ -30,6 +31,9 @@ const SURFACES = [
   "h1, h2, h3, h4, h5, h6, p, li, dt, dd, blockquote, pre, code, table, figure, time, kbd, [data-slot='badge']",
   "header, footer, nav, .status-bar, .scroll-telemetry, .hero-experience, .case-art",
 ].join(", ");
+
+/** Clicks and taps can pulse over text, except navigable cards and controls. */
+const PULSE_EXCLUDED = ".project-row, a, button, input, textarea, select, label, summary, [role='button'], [role='link'], [role='dialog'], [role='option'], [contenteditable='true']";
 
 /** Full-card links are invisible overlays: look beneath them for what is actually under the cursor. */
 function surfaceUnder(target: EventTarget | null, x: number, y: number) {
@@ -200,9 +204,9 @@ export function CircuitField() {
     };
     const onDown = (event: PointerEvent) => {
       if (event.button !== 0 || paused()) return;
-      // Clicking a card, link, or control does only that; pulses start from empty background.
+      // Keep navigation and controls free of pulses on both desktop and mobile.
       const target = event.target;
-      if (target instanceof Element && (target.closest(SURFACES) || target.matches(".project-card-link"))) return;
+      if (target instanceof Element && target.closest(PULSE_EXCLUDED)) return;
       pulses.push({
         col: Math.round((event.clientX - SPACING / 2) / SPACING),
         row: Math.round((event.clientY - SPACING / 2) / SPACING),

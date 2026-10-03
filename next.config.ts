@@ -14,6 +14,13 @@ function commitSha() {
 const nextConfig: NextConfig = {
   turbopack: { root: process.cwd() },
   env: { NEXT_PUBLIC_COMMIT_SHA: commitSha() },
+  redirects() {
+    return [{
+      source: "/projects/degree-planner-ai",
+      destination: "/projects/coursecompass-ai",
+      permanent: true,
+    }];
+  },
 };
 
 export default nextConfig;

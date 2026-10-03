@@ -169,7 +169,7 @@ test("anchor destinations and keyboard focus bypass entrances", async ({
   await expect(page).toHaveURL(/#main-content/);
   await page
     .getByRole("navigation", { name: "Main navigation" })
-    .getByRole("link", { name: "01 Work" })
+    .getByRole("link", { name: "01 Projects" })
     .click();
   await expect(page).toHaveURL(/#work/);
   await expect
@@ -354,7 +354,7 @@ test("core content and navigation work without JavaScript", async ({
   await page.goto(baseURL!);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator(".system-poster")).toBeVisible();
-  await page.getByRole("link", { name: "See my work" }).click();
+  await page.getByRole("link", { name: "See my projects" }).click();
   await expect(page).toHaveURL(/#work/);
   await page.locator('.case-link[href="/projects/vibesafe"]').click();
   await expect(
