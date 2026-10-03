@@ -355,9 +355,9 @@ export const experience: Experience[] = [
     company: "Timing",
     shortCompany: "Timing",
     contributions: [
-      "Helped build Timing’s AI networking assistant at a small, early-stage startup, including a Chrome extension that put contact management and outreach directly into LinkedIn and Gmail.",
       "Built a GPT-4o agent to prioritize follow-ups and draft outreach across 1,000+ contacts. It combined function calling and structured outputs with a RAG pipeline using OpenAI embeddings, pgvector, and PostgreSQL.",
-      "Made backend APIs 80% faster, bringing latency from 450 ms to under 90 ms through composite PostgreSQL indexes and Redis caching.",
+      "Built a Manifest V3 Chrome extension at the early-stage AI startup, using content scripts and browser APIs to bring Timing’s networking assistant into LinkedIn and Gmail.",
+      "Reduced p95 contact API latency by 80%, from 450 ms to under 90 ms, with composite PostgreSQL indexes and Redis caching.",
     ],
     tools: ["OpenAI API", "PostgreSQL", "pgvector", "Redis"],
   },
@@ -380,10 +380,9 @@ export const experience: Experience[] = [
     role: "Software Engineering Intern",
     company: "Vogro",
     shortCompany: "Vogro",
-    context: "Stanford-affiliated",
     contributions: [
+      "Worked with project leads to plan and build REST API integrations using FastAPI and Node.js, connecting the React frontend, backend services, and third-party tools for 500+ users.",
       "Wrote Python scripts to move, validate, and deduplicate data across internal tools, cutting time spent on manual data processing by 40%.",
-      "Connected the React frontend, backend services, and third-party tools through REST APIs built with FastAPI and Node.js, contributing to 3+ releases serving 500+ users.",
       "Improved page load times by 20% by removing duplicate API requests and refactoring React components, making the app run more smoothly on lower-end devices.",
     ],
     tools: ["Python", "FastAPI", "Node.js", "React"],
@@ -395,7 +394,7 @@ export const skills: { id: string; name: string; items: string[]; emphasis: stri
   {
     id: "01",
     name: "Languages",
-    items: ["Python", "SQL", "TypeScript / JavaScript", "Java", "C++", "HTML / CSS"],
+    items: ["Python", "SQL", "TypeScript / JavaScript", "Go", "Java", "C++", "HTML / CSS"],
     emphasis: ["SQL"],
   },
   {
