@@ -27,7 +27,7 @@ export const profile: Profile = {
     "Working on AI agents, backend systems, and interactive software.",
   ],
   introduction:
-    "I’m a CS student at UNC Chapel Hill with a minor in Data Science, graduating in May 2027. Lately, a lot of what I work on comes back to AI. I like trying open source models and tools I find through Reddit or X, running them locally, and experimenting with them or turning them into small projects when something catches my attention. I like making things that either make my own life easier or just genuinely interest me, and lately I’ve been curious about distilling models and seeing how capable I can make smaller models run locally.",
+    "I’m a CS student at UNC Chapel Hill with a minor in Data Science, graduating in May 2027. Lately, a lot of what I work on comes back to AI. I like trying open source models and tools I find through Reddit or X, running them locally, and experimenting with them or turning them into small projects when something catches my attention. I like making things that make life easier for me and for others, or just genuinely interest me. I also enjoy working with other people, sharing ideas, and figuring things out together. Lately, I’ve been curious about distilling models and seeing how capable I can make smaller models run locally.",
   about:
     "But right now, I'm more focused on learning Go and Elixir because I want to better understand concurrency and fault tolerance, and how those are used to build a backend infrastructure that scales properly.",
   email: "armanmansoorhassan@gmail.com",
@@ -380,7 +380,9 @@ export const experience: Experience[] = [
     role: "Software Engineering Intern",
     company: "Vogro",
     shortCompany: "Vogro",
+    context: "Stanford-affiliated",
     contributions: [
+      "Helped build software for Vogro, a Stanford-affiliated volunteer program serving seniors. I worked with project leads on the platform and internal tools that supported the program’s day-to-day work.",
       "Worked with project leads to plan and build REST API integrations using FastAPI and Node.js, connecting the React frontend, backend services, and third-party tools for 500+ users.",
       "Wrote Python scripts to move, validate, and deduplicate data across internal tools, cutting time spent on manual data processing by 40%.",
       "Improved page load times by 20% by removing duplicate API requests and refactoring React components, making the app run more smoothly on lower-end devices.",
