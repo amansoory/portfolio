@@ -8,20 +8,42 @@ export function CodeDrop() {
   const [count, setCount] = useState(0);
   const [muted, setMuted] = useState(false);
   const audio = useRef<AudioContext | null>(null);
+  const sessionRestore = useRef<(() => void) | null>(null);
   const complete = count === MESSAGE.length;
 
   useEffect(() => () => {
     void audio.current?.close().catch(() => {});
     audio.current = null;
+    sessionRestore.current?.();
+    sessionRestore.current = null;
   }, []);
+
+  async function prepareAudio() {
+    // iOS 17+ defaults Web Audio to ambient, which obeys the silent switch.
+    // Request media playback only in response to an explicit sound interaction.
+    const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+    if (session && !sessionRestore.current) {
+      try {
+        const previous = session.type;
+        session.type = "playback";
+        sessionRestore.current = () => { session.type = previous; };
+      } catch {
+        // Unsupported session types must not prevent normal Web Audio playback.
+      }
+    }
+    const context = audio.current?.state !== "closed" && audio.current
+      ? audio.current
+      : new AudioContext();
+    audio.current = context;
+    // Resume both suspended and iOS-interrupted contexts on the next tap.
+    if (context.state !== "running") await context.resume();
+    return context;
+  }
 
   async function playDrop(next: number) {
     if (muted) return;
     try {
-      // Create/resume only from a tap or keyboard activation, including on mobile.
-      const context = audio.current ?? new AudioContext();
-      audio.current = context;
-      if (context.state === "suspended") await context.resume();
+      const context = await prepareAudio();
       if (context.state !== "running") return;
 
       function tone(frequency: number, delay: number, duration: number, falling = false, volume = 0.065) {
@@ -58,9 +80,7 @@ export function CodeDrop() {
   async function playReset() {
     if (muted) return;
     try {
-      const context = audio.current ?? new AudioContext();
-      audio.current = context;
-      if (context.state === "suspended") await context.resume();
+      const context = await prepareAudio();
       if (context.state !== "running") return;
 
       // Filtered, gently pulsing noise makes a short fabric brushing sound.
@@ -139,6 +159,8 @@ export function CodeDrop() {
           if (!muted) {
             void audio.current?.close().catch(() => {});
             audio.current = null;
+            sessionRestore.current?.();
+            sessionRestore.current = null;
           }
         }}
       >
