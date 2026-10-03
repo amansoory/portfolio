@@ -1770,6 +1770,9 @@ h2 > span {
 .code-drop-reset { position: absolute; bottom: 10px; right: 12px; min-height: 44px; padding: 8px 12px; font: 12px var(--font-body), sans-serif; color: #c1d9b1; border-radius: 4px; }
 .code-drop-reset:hover { background: #b6dca114; }
 .code-drop-reset:focus-visible { outline: 2px solid #b6dca1; outline-offset: 2px; }
+.code-drop-sound { position: absolute; top: 40px; right: 12px; min-height: 44px; padding: 8px 12px; font: 10px var(--font-code), monospace; color: #9bab8b; border-radius: 4px; }
+.code-drop-sound:hover { color: #c1d9b1; background: #b6dca114; }
+.code-drop-sound:focus-visible { outline: 2px solid #b6dca1; outline-offset: 2px; }
 .code-drop[data-complete="true"] .code-drop-line { color: #dcf7ca; text-shadow: 0 0 10px #b6dca188, 0 0 24px #b6dca14d; transition: color 300ms 650ms, text-shadow 300ms 650ms; }
 @keyframes code-drop-fall {
   0% { transform: translateY(-145px) rotate(var(--drop-turn, -18deg)); opacity: 0; }
