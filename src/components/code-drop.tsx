@@ -1,10 +1,35 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const MESSAGE = 'yourNextEngineer = "Arman";';
+const MOBILE_TOUCH = "(max-width: 767px) and (pointer: coarse) and (hover: none)";
+
+function subscribeMobile(callback: () => void) {
+  const query = window.matchMedia(MOBILE_TOUCH);
+  query.addEventListener("change", callback);
+  return () => query.removeEventListener("change", callback);
+}
+
+function nativeHapticAvailable() {
+  return window.matchMedia(MOBILE_TOUCH).matches &&
+    "switch" in HTMLInputElement.prototype && typeof navigator.vibrate !== "function";
+}
+
+function haptic(pattern: number | number[]) {
+  if (
+    !window.matchMedia(MOBILE_TOUCH).matches ||
+    typeof navigator.vibrate !== "function"
+  ) return;
+  try {
+    navigator.vibrate(pattern);
+  } catch {
+    // Unsupported or blocked vibration must not interrupt the game.
+  }
+}
 
 export function CodeDrop() {
+  const nativeHaptic = useSyncExternalStore(subscribeMobile, nativeHapticAvailable, () => false);
   const [count, setCount] = useState(0);
   const [muted, setMuted] = useState(false);
   const audio = useRef<AudioContext | null>(null);
@@ -118,12 +143,14 @@ export function CodeDrop() {
     let next = Math.min(count + 1, MESSAGE.length);
     while (MESSAGE[next] === " ") next++;
     setCount(next);
+    haptic(next === MESSAGE.length ? [12, 45, 20] : 12);
     void playDrop(next);
   }
 
   return (
     <div className="about-art code-drop" data-complete={complete} data-lens="off">
       <div className="about-art-grid" aria-hidden="true" />
+      <div className="code-drop-target">
       <button
         type="button"
         className="code-drop-surface"
@@ -131,6 +158,8 @@ export function CodeDrop() {
         disabled={complete}
         aria-label="Drop next character"
         aria-describedby="code-drop-status"
+        aria-hidden={nativeHaptic || undefined}
+        tabIndex={nativeHaptic ? -1 : undefined}
       >
         <span className="code-drop-top" aria-hidden="true">A LITTLE CODE, ONE CLICK AT A TIME</span>
         <span className="code-drop-hint" aria-hidden="true">
@@ -149,6 +178,24 @@ export function CodeDrop() {
         </span>
         <span className="code-drop-floor" aria-hidden="true" />
       </button>
+      {nativeHaptic && (
+        // A real tap on a native switch produces the iOS tick; .click() does not.
+        // Technique documented by github.com/m1ckc3s/project-fathom.
+        <input
+          type="checkbox"
+          {...{ switch: "" }}
+          className="code-drop-haptic-target"
+          role="button"
+          aria-label="Drop next character"
+          aria-describedby="code-drop-status"
+          disabled={complete}
+          onChange={drop}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") { event.preventDefault(); drop(); }
+          }}
+        />
+      )}
+      </div>
       <button
         type="button"
         className="code-drop-sound"
@@ -170,7 +217,7 @@ export function CodeDrop() {
         {complete ? `Complete — ${MESSAGE}` : `${count} / ${MESSAGE.length} characters`}
       </p>
       {count > 0 && (
-        <button type="button" className="code-drop-reset" onClick={() => { setCount(0); void playReset(); }}>
+        <button type="button" className="code-drop-reset" onClick={() => { setCount(0); haptic(18); void playReset(); }}>
           {complete ? "Run again" : "Reset"} <span aria-hidden="true">↻</span>
         </button>
       )}
