@@ -103,7 +103,7 @@ export default async function ProjectPage({ params }: Props) {
             )}
             <div className="case-resources">
               <ResourceLink href={project.live} className="live-demo-link">
-                Live Demo
+                {project.liveLabel ?? "Live Demo"}
               </ResourceLink>
               <ResourceLink href={project.github}>
                 <GitFork size={15} />

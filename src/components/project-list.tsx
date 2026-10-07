@@ -70,9 +70,9 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                       </Link>
                       {project.live ? (
                         <ResourceLink href={project.live} className="project-live-link">
-                          {project.slug === "vibesafe" || project.featured
+                          {project.liveLabel ?? (project.slug === "vibesafe" || project.featured
                             ? copy.work.demo
-                            : copy.work.live}
+                            : copy.work.live)}
                         </ResourceLink>
                       ) : (
                         <ResourceLink href={project.github}>
