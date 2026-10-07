@@ -190,36 +190,12 @@ export const projects: Project[] = [
     "lessons": "A search result, a resolved stream URL, and a TrackStart event are different milestones from audible music. Cloud deployment exposed that distinction: the same source that worked locally hit YouTube login checks on Oracle. Account cookies cleared authentication, but Lavalink still received HTTP 403. Comparing a small yt-dlp audio download with a direct audio request isolated a playback-context difference. The fix used documented upstream settings and a maintained token provider, followed by a real Discord listening test.",
     "details": [
       {
-        "title": "Music controls people actually use",
-        "text": "The bot has 19 slash commands: play, playnext, search, pause, resume, skip, stop, queue, nowplaying, skipto, remove, move, shuffle, clear, loop, volume, lyrics, menu, help. Search offers five selectable results. Queue pages are public and show ten upcoming tracks at a time. A compact, updating menu replaces giant YouTube previews and repeated control popups; controls require the user to share the bot’s voice channel. Lyrics from LRCLIB are shown without timestamps."
+        "title": "Getting the music and controls right",
+        "text": "Built with TypeScript, Node.js, discord.js, lavalink-client, Spotify Web API, and LRCLIB. Lavalink on Java streams audio through LavaSrc, yt-dlp, and Deno, with Opus preferred. The tricky parts were choosing the right recording, preferring explicit versions when appropriate, and keeping play-next and skip from disrupting a playlist. Deterministic scoring checks identity, duration, uploader, and version keywords; concurrent searches and queue pre-resolution reduce waiting. Compact menus replace giant previews and repeated popups. The 88-test suite covers matching, authorization, imports, queue transitions, controls, and failures; timing logs help locate delays."
       },
       {
-        "title": "Correct recordings before keyword matches",
-        "text": "Spotify metadata supplies title, artists, album, duration, ISRC when available, artwork, and explicit status. Matching scores candidates deterministically using recording identity, duration, uploader information, and version keywords. Lyric uploads are preferred when the recording is correct; covers, slowed or sped-up edits, karaoke, and unintended live, remix, or instrumental versions are penalized. Explicit and clean versions needed special handling so a playlist would not silently choose a clean upload when an explicit match was available. No LLM or embeddings are involved."
-      },
-      {
-        "title": "Cold requests and queue continuity",
-        "text": "The design targets previously unseen Spotify links. Authentication is prewarmed, voice connection work overlaps resolution, and lyric and exact-recording searches run concurrently after metadata arrives. Playlist metadata imports progressively, while upcoming tracks are resolved ahead of playback. This is not a whole-song download or a guarantee of gapless transitions. Queue regression tests cover play-next insertion, skipping, reordering, looping, and stale asynchronous work so one control action does not erase the remaining playlist."
-      },
-      {
-        "title": "The working stack",
-        "text": "Node.js 24 and TypeScript run the application with discord.js 14, lavalink-client 2, and dotenv. Lavalink 4.2.2 runs on Java 21 with LavaSrc 4.8.3’s yt-dlp backend; the deployed extractor is yt-dlp 2026.08.19 with Deno 2.9.7 for JavaScript challenges. Spotify Web API uses Client Credentials for track metadata and user authorization for supported playlist access. LRCLIB supplies lyrics. The Oracle deployment adds bgutil-ytdlp-pot-provider 2.0.1 and its matching yt-dlp plugin. Opus audio is preferred. There is no database, Redis, Docker dependency, custom decoder, or FFmpeg process in the deployed stack."
-      },
-      {
-        "title": "Moving from Windows to ARM64 Linux",
-        "text": "I developed locally on Windows and PowerShell, then deployed to an Ubuntu ARM64 Oracle Always Free instance with 1 OCPU and 6 GB RAM already serving my C++ Jev 2048 evaluator. Linux runtime binaries were installed separately and available release checksums verified. Dedicated systemd services manage the bot, Lavalink, and token provider under an unprivileged account. Memory limits protect the shared machine; the token provider and Lavalink listen only on localhost. The local bot was stopped before the cloud bot connected, preventing duplicate processes using the same token. Jev remained running throughout."
-      },
-      {
-        "title": "Why the first cloud playback failed",
-        "text": "Anonymous YouTube requests returned LOGIN_REQUIRED on the cloud server. A PO-token provider alone did not help because the request failed before token generation. Separately authorized YouTube cookies cleared that stage. Cookies plus the provider let yt-dlp retrieve an audio sample, while an immediate direct request and Lavalink still failed with HTTP 403. Applying yt-dlp’s documented mweb use_ad_playback_context setting allowed a 16 KB HTTP 206 Opus response and a passing Lavalink preparation test. A listener then confirmed audio in Discord. This solved the tested deployment; it is not a permanent guarantee against future YouTube changes."
-      },
-      {
-        "title": "Verification and operational limits",
-        "text": "Focused Node tests cover song matching, Spotify authorization and parsing, playlists, queue transitions, Discord interactions, playback failures, and lyric formatting. performance.now() instrumentation records spotifyMetadataMs, searchMs, matchMs, voiceConnectMs, playbackStartMs, and totalPlayRequestMs. Track-start timings are proxies, not measured first-audible latency. Cookies may expire, source availability can change, and queues are in memory and reset on restart. Spotify playlist access depends on the authorized account and API restrictions. Concurrent server playback is supported, but this small shared VM has not been load-tested for a large public audience."
-      },
-      {
-        "title": "Free to use, with a source download",
-        "text": "The hosted bot has no feature subscription for my friends. Add to Discord installs it into a server; there is no desktop app to download. The GitHub source archive is available for developers who want to run their own instance with their own credentials. Free hosting still has resource limits and does not promise uninterrupted service."
+        "title": "Making local playback work in the cloud",
+        "text": "I moved the bot from Windows to an Oracle Cloud ARM64 Ubuntu server already running Jev 2048. YouTube rejected anonymous cloud requests; cookies cleared login checks, but streaming still returned HTTP 403. A maintained bgutil PO-token provider plus yt-dlp’s documented mweb playback-context setting resolved the tested stream. I verified audio bytes, Lavalink preparation, and finally sound in Discord. Separate systemd services, private credentials, localhost-only audio endpoints, and memory limits keep both projects running, with automatic startup after reboots. Cookies can expire, queues reset on restart, and the shared server has not been load-tested for a large audience."
       }
     ],
     "github": "https://github.com/amansoory/arman-mb",
