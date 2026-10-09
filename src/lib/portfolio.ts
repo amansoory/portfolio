@@ -167,7 +167,7 @@ export const projects: Project[] = [
     "accent": "blue",
     "visual": "arcade",
     "visualLabels": [],
-    "description": "A free Discord music bot built for my friends, with Spotify imports, YouTube search, lyrics, and shared music controls. Runs on Oracle Cloud even when my laptop is off.",
+    "description": "A free Discord music bot for friends, with live song suggestions, personal Spotify playlist connections, lyrics, and shared queue controls. Built in TypeScript and deployed on Oracle Cloud.",
     "tags": [
       "TypeScript",
       "Node.js",
@@ -178,34 +178,30 @@ export const projects: Project[] = [
     ],
     "metrics": [
       "19 slash commands",
-      "Independent server queues",
-      "Cloud-hosted playback"
+      "Up to 20 search suggestions",
+      "104 automated tests"
     ],
     "year": "2026",
     "role": "Bot development, song matching, Discord UX, testing, and cloud deployment",
     "duration": null,
     "problem": "I knew friends who were willing to pay for a music-bot service just to get all the features they wanted. I built Arman MB so we could listen together and use those controls for free. It started as a private-server tool and became one of my most-used projects among friends. That made the everyday details matter: picking the right recording, keeping the queue intact, and making the controls easy to find.",
-    "approach": "The TypeScript application separates Discord commands, Spotify metadata, source resolution, deterministic song matching, playback, and per-server queue state. Spotify identifies the song; it does not supply the audio or take over my personal Spotify playback. Lavalink and maintained source tools handle streaming into Discord. I kept custom code focused on recording selection, queue behavior, and the interface rather than building a YouTube extractor.",
-    "outcome": "Friends can submit Spotify tracks, albums, and accessible playlists, YouTube links and playlists, or a plain-text search. A shared player menu supports pause, resume, skip, stop, queue navigation, and looping. Each Discord server has its own player and queue. The bot now runs alongside my Jev 2048 service on Oracle Cloud, with audible playback confirmed after migration and automatic startup enabled. Usage is based on my experience with friends, not a published user-count or uptime benchmark.",
-    "lessons": "A search result, a resolved stream URL, and a TrackStart event are different milestones from audible music. Cloud deployment exposed that distinction: the same source that worked locally hit YouTube login checks on Oracle. Account cookies cleared authentication, but Lavalink still received HTTP 403. Comparing a small yt-dlp audio download with a direct audio request isolated a playback-context difference. The fix used documented upstream settings and a maintained token provider, followed by a real Discord listening test.",
+    "approach": "A modular TypeScript application separates Discord interactions, Spotify metadata, deterministic recording selection, Lavalink playback, and per-guild queues. Spotify supplies track identity and playlist access without taking over personal playback. Maintained audio tooling handles extraction; custom logic focuses on lyric-video preference, explicit-version matching, responsive controls, and fault recovery.",
+    "outcome": "Listeners can submit Spotify tracks, albums, and accessible playlists; paste YouTube links; or select songs from /play autocomplete using an artist name or partial title. Per-listener Spotify authorization supports owned and collaborative playlists within Spotify’s access rules. Live player menus, lyrics, paginated queues, play-next, and looping work across independent server queues. The bot runs alongside Jev 2048 on Oracle Cloud and is one of my most-used projects among friends.",
+    "lessons": "Successful metadata lookup is not proof of audible playback. I traced failures across API access, extractor authentication, stream retrieval, and Discord voice delivery. Production issues exposed shared-cookie write races, overly aggressive search deadlines, and a stalled-track handler that cleared playlists. Fixes needed bounded concurrency and event-aware recovery, followed by real listening tests—not just successful TrackStart events.",
     "details": [
       {
-        "title": "Getting the music and controls right",
-        "text": "Built with TypeScript, Node.js, discord.js, lavalink-client, Spotify Web API, and LRCLIB. Lavalink on Java streams audio through LavaSrc, yt-dlp, and Deno, with Opus preferred. The tricky parts were choosing the right recording, preferring explicit versions when appropriate, and keeping play-next and skip from disrupting a playlist. Deterministic scoring checks identity, duration, uploader, and version keywords; concurrent searches and queue pre-resolution reduce waiting. Compact menus replace giant previews and repeated popups. The 88-test suite covers matching, authorization, imports, queue transitions, controls, and failures; timing logs help locate delays."
+        "title": "Search, identity, and Discord controls",
+        "text": "TypeScript, Node.js, discord.js, lavalink-client, Spotify Web API, and LRCLIB power the application. Autocomplete debounces typing, cancels superseded requests, fetches two Spotify result pages concurrently, and retains completed results if another page stalls. Unicode-normalized artist/title prefix scoring ranks up to 20 suggestions; a live “drake solar” check returned 18 results in 363 ms. That measures catalog lookup, not audible startup. Personal playlist login uses OAuth authorization codes with PKCE, expiring single-use state, per-Discord-user refresh tokens, atomic private-file persistence, and an HTTPS callback behind nginx. Central interaction routing updates shared player cards without per-song collectors or repeated status messages."
       },
       {
-        "title": "Making local playback work in the cloud",
-        "text": "I moved the bot from Windows to an Oracle Cloud ARM64 Ubuntu server already running Jev 2048. YouTube rejected anonymous cloud requests; cookies cleared login checks, but streaming still returned HTTP 403. A maintained bgutil PO-token provider plus yt-dlp’s documented mweb playback-context setting resolved the tested stream. I verified audio bytes, Lavalink preparation, and finally sound in Discord. Separate systemd services, private credentials, localhost-only audio endpoints, and memory limits keep both projects running, with automatic startup after reboots. Cookies can expire, queues reset on restart, and the shared server has not been load-tested for a large audience."
+        "title": "Streaming reliability and cloud operations",
+        "text": "Lavalink, LavaSrc, yt-dlp, Deno, and a maintained bgutil PO-token provider stream audio with Opus preferred. Oracle’s YouTube login checks and HTTP 403 failures required account cookies and documented playback-context settings. Per-process cookie copies prevent concurrent extractor writes; serialized playlist resolution avoids competing searches on the single-core ARM64 host. Stalled-track recovery waits for the client’s stop event before retrying or selecting an alternate, preserving the queue. Repeated failures suspend automatic attempts instead of spamming chat. Isolated systemd services, memory limits, localhost-only audio endpoints, nginx, and renewable TLS support deployment. The 104-test suite covers matching, queues, autocomplete, and mocked OAuth/security flows. Cookies can expire, restart clears queues, and large-scale capacity remains untested."
       }
     ],
-    "github": "https://github.com/amansoory/arman-mb",
+    "github": null,
     "live": "https://discord.com/oauth2/authorize?client_id=1557127638907097138&permissions=3165184&scope=bot%20applications.commands",
     "liveLabel": "Add to Discord",
     "sources": [
-      {
-        "label": "Download source ZIP",
-        "href": "https://github.com/amansoory/arman-mb/archive/refs/heads/master.zip"
-      },
       {
         "label": "Lavalink",
         "href": "https://github.com/lavalink-devs/Lavalink"
@@ -231,7 +227,7 @@ export const projects: Project[] = [
       "src": "/projects/arman-mb.webp",
       "alt": "Discord music illustration with headphones and musical notes; cover artwork, not a screenshot of the bot."
     },
-    "accessNote": "Free hosted bot. Add it to a server you can manage, join voice, and use /play. Source download available in the case study.",
+    "accessNote": "Free hosted bot; source code is private. Add it to a server you can manage, join voice, and use /play. Personal Spotify playlist login is subject to Spotify app-access and ownership rules.",
     "featured": true,
     "placeholder": false
   },
